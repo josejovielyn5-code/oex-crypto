@@ -1,105 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>OEX Crypto</title>
-<style>
-:root{--bg:#080d18;--panel:#111a2b;--panel2:#172238;--line:#25334b;--text:#eef4ff;--muted:#91a0b8;--blue:#5b8cff;--green:#22c58b;--red:#ff6b78}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#15264a 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:11px 16px;font-weight:700;background:var(--blue);color:white}button.secondary{background:var(--panel2);border:1px solid var(--line)}button.danger{background:#572631}button:disabled{opacity:.5;cursor:not-allowed}
-.wrap{max-width:1180px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;font-size:20px;letter-spacing:.4px}.logo{height:38px;width:38px;border-radius:12px;background:linear-gradient(135deg,#78a7ff,#4c5de7);display:grid;place-items:center;font-weight:900;font-size:22px}.brand span{color:#79a6ff}.topright{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
-.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.panel{background:linear-gradient(160deg,rgba(21,32,52,.98),rgba(15,23,39,.98));border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 55px #0002}.hero{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:20px}.eyebrow{font-size:12px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase}.balance{font-size:36px;font-weight:800;letter-spacing:-1px;margin:4px 0}.sub{color:var(--muted);font-size:13px}.pill{display:inline-flex;align-items:center;gap:7px;background:#12392f;color:#68e2b4;border:1px solid #1e5b49;border-radius:30px;padding:6px 10px;font-size:12px}.dot{height:7px;width:7px;border-radius:50%;background:var(--green)}
-h2{font-size:17px;margin:0 0 16px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;min-width:270px}.stat{background:#0d1626;border:1px solid var(--line);padding:13px;border-radius:13px}.stat strong{display:block;font-size:18px;margin-top:4px}
-table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:600;padding:10px 8px;border-bottom:1px solid var(--line)}td{padding:13px 8px;border-bottom:1px solid #202c40;font-size:13px}tr:last-child td{border-bottom:0}.coin{display:flex;align-items:center;gap:10px;font-weight:700}.coin img{width:29px;height:29px;border-radius:50%}.symbol{color:var(--muted);font-size:11px;font-weight:500}.positive{color:var(--green)}.negative{color:var(--red)}.right{text-align:right}.empty{text-align:center;color:var(--muted);padding:25px 8px}
-.formbox{max-width:430px;margin:8vh auto;padding:28px}.formbox h1{margin:0 0 5px}.field{margin:14px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}.field input,.field select{width:100%;padding:12px 13px;border-radius:10px;background:#0b1423;border:1px solid var(--line);color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:var(--blue)}.full{width:100%;margin-top:8px}.switch{color:#9bb8ff;background:none;padding:8px}.error{color:#ff8992;font-size:13px;min-height:20px}.notice{margin-top:16px;padding:12px;border:1px solid #6c5424;background:#2a2418;color:#e8cb8a;border-radius:11px;font-size:12px}
-.modalback{position:fixed;inset:0;background:#0009;display:grid;place-items:center;padding:18px;z-index:5}.modal{width:min(430px,100%);background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:22px}.hidden{display:none!important}.foot{color:var(--muted);font-size:11px;text-align:center;margin:22px 0}.status{font-size:12px;color:var(--muted);margin-top:9px}
-@media(max-width:780px){.wrap{padding:15px}.layout{grid-template-columns:1fr}.hero{grid-column:auto;display:block}.stats{margin-top:20px;min-width:0}.top{align-items:flex-start}.topright{flex-direction:column;align-items:flex-end}.balance{font-size:30px}.panel{padding:16px}.marketwrap{overflow-x:auto}table{min-width:520px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OEX Crypto</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #07111f;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 7%;
+      border-bottom: 1px solid #1d2a3a;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: #25d366;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 700;
+    }
+
+    .login-btn {
+      background: transparent;
+      color: white;
+      border: 1px solid #34465d;
+    }
+
+    .signup-btn,
+    .primary-btn {
+      background: #25d366;
+      color: #061018;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: auto;
+      padding: 100px 7%;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 76px);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      color: #25d366;
+    }
+
+    .hero p {
+      color: #aebdce;
+      font-size: 18px;
+      max-width: 650px;
+      margin: 0 auto 35px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .markets {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px 7% 80px;
+    }
+
+    .markets h2 {
+      margin-bottom: 20px;
+    }
+
+    .market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .coin {
+      background: #0d1a2b;
+      border: 1px solid #1d2a3a;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .coin-name {
+      color: #aebdce;
+      margin-bottom: 10px;
+    }
+
+    .coin-price {
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 430px;
+      background: #0d1a2b;
+      border: 1px solid #26384d;
+      border-radius: 15px;
+      padding: 30px;
+    }
+
+    .modal-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      gap: 8px;
+    }
+
+    .tab {
+      flex: 1;
+      background: #16263a;
+      color: white;
+    }
+
+    .tab.active {
+      background: #25d366;
+      color: #061018;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 12px;
+      background: #07111f;
+      border: 1px solid #34465d;
+      border-radius: 8px;
+      color: white;
+      outline: none;
+    }
+
+    .form-button {
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+      color: #aebdce;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #25d366;
+      line-height: 1.5;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid #1d2a3a;
+      color: #73849a;
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 18px;
+      }
+
+      .hero {
+        padding: 70px 20px;
+      }
+
+      .markets {
+        padding: 20px 20px 60px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div id="auth" class="wrap">
-  <div class="panel formbox">
-    <div class="brand"><div class="logo">O</div> OEX <span>CRYPTO</span></div>
-    <div style="height:24px"></div>
-    <h1 id="formTitle">Welcome back</h1><div class="sub" id="formSubtitle">Sign in to view your OEX wallet.</div>
-    <form id="authForm">
-      <div class="field" id="nameField"><label for="name">DISPLAY NAME</label><input id="name" autocomplete="name" placeholder="Your name"></div>
-      <div class="field"><label for="email">EMAIL</label><input id="email" type="email" autocomplete="username" required placeholder="you@example.com"></div>
-      <div class="field"><label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></div>
-      <div class="error" id="authError"></div>
-      <button class="full" id="submitAuth">Sign in</button>
-    </form>
-    <div style="text-align:center;margin-top:12px"><span class="sub" id="switchText">New to OEX?</span> <button class="switch" id="switchMode" type="button">Create account</button></div>
-    <div class="notice">Demo prototype: accounts and sample holdings are stored only in this browser. Do not use a real password or deposit real funds.</div>
-  </div>
-</div>
-<div id="app" class="wrap hidden">
-  <header class="top">
-    <div class="brand"><div class="logo">O</div> OEX <span>CRYPTO</span></div>
-    <div class="topright"><span><span class="dot" style="display:inline-block"></span> Market data</span><span id="userLabel"></span><button class="secondary" id="logout">Log out</button></div>
+
+  <header class="header">
+    <div class="logo">OEX</div>
+
+    <div class="header-buttons">
+      <button class="login-btn" onclick="openModal('login')">Log In</button>
+      <button class="signup-btn" onclick="openModal('signup')">Sign Up</button>
+    </div>
   </header>
-  <main class="layout">
-    <section class="panel hero">
-      <div><div class="eyebrow">Your estimated portfolio value</div><div class="balance" id="totalValue">$0.00</div><div class="sub">Based on your coin quantities and latest available market prices</div>
-        <div class="actions"><button id="addHolding">＋ Add coin holding</button><button class="secondary" id="refresh">↻ Refresh prices</button></div>
+
+  <section class="hero">
+    <h1>Trade Crypto with <span>OEX</span></h1>
+
+    <p>
+      Manage your cryptocurrency portfolio, monitor live market prices,
+      and access your OEX account securely.
+    </p>
+
+    <div class="hero-actions">
+      <button class="primary-btn" onclick="openModal('signup')">
+        Create Account
+      </button>
+
+      <button class="login-btn" onclick="openModal('login')">
+        Login
+      </button>
+    </div>
+  </section>
+
+  <section class="markets">
+    <h2>Live Crypto Markets</h2>
+
+    <div class="market-grid" id="marketGrid">
+      Loading prices...
+    </div>
+  </section>
+
+  <footer class="footer">
+    © 2026 OEX Crypto
+  </footer>
+
+  <!-- AUTH MODAL -->
+  <div class="modal" id="authModal">
+
+    <div class="modal-box">
+
+      <span class="close" onclick="closeModal()">×</span>
+
+      <div class="tabs">
+        <button class="tab active" id="loginTab" onclick="switchMode('login')">
+          Login
+        </button>
+
+        <button class="tab" id="signupTab" onclick="switchMode('signup')">
+          Sign Up
+        </button>
       </div>
-      <div class="stats"><div class="stat"><div class="eyebrow">Assets held</div><strong id="assetCount">0</strong></div><div class="stat"><div class="eyebrow">Market update</div><strong id="updatedAt" style="font-size:14px">Loading…</strong></div></div>
-    </section>
-    <section class="panel">
-      <h2>My wallet</h2>
-      <div class="marketwrap"><table><thead><tr><th>Asset</th><th class="right">Quantity</th><th class="right">Value (USD)</th></tr></thead><tbody id="walletRows"><tr><td colspan="3" class="empty">No coins yet. Add a holding to get started.</td></tr></tbody></table></div>
-    </section>
-    <section class="panel">
-      <h2>Market overview</h2>
-      <div class="marketwrap"><table><thead><tr><th>Coin</th><th class="right">Price</th><th class="right">24h</th></tr></thead><tbody id="marketRows"><tr><td colspan="3" class="empty">Fetching market prices…</td></tr></tbody></table></div>
-      <div class="status" id="marketStatus">Prices provided by CoinGecko. Refreshes every 60 seconds.</div>
-    </section>
-  </main>
-  <div class="foot">OEX Crypto is a demonstration interface, not a licensed exchange. Market prices may be delayed. No real trading, custody, deposits or withdrawals are enabled.</div>
-</div>
-<div id="modal" class="modalback hidden">
-  <div class="modal">
-    <h2>Add coin holding</h2><div class="sub">Enter the amount you currently own. This updates your demo wallet only.</div>
-    <div class="field"><label for="coinSelect">COIN</label><select id="coinSelect"></select></div>
-    <div class="field"><label for="coinAmount">QUANTITY</label><input id="coinAmount" type="number" min="0.00000001" step="any" placeholder="e.g. 0.25"></div>
-    <div class="error" id="holdingError"></div>
-    <div class="actions"><button id="saveHolding">Save holding</button><button class="secondary" id="cancelHolding">Cancel</button></div>
+
+      <h2 id="authTitle">Login to OEX</h2>
+
+      <form id="authForm">
+
+        <div id="nameField" style="display:none;">
+          <input
+            type="text"
+            id="displayName"
+            placeholder="Full Name"
+          >
+        </div>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="Email address"
+          required
+        >
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+          minlength="6"
+        >
+
+        <button class="primary-btn form-button" type="submit">
+          <span id="submitText">Login</span>
+        </button>
+
+      </form>
+
+      <div class="message" id="message"></div>
+
+    </div>
   </div>
-</div>
+
 <script>
-const COINS=[
- {id:'bitcoin',symbol:'BTC',name:'Bitcoin'},{id:'ethereum',symbol:'ETH',name:'Ethereum'},
- {id:'solana',symbol:'SOL',name:'Solana'},{id:'binancecoin',symbol:'BNB',name:'BNB'},
- {id:'ripple',symbol:'XRP',name:'XRP'},{id:'dogecoin',symbol:'DOGE',name:'Dogecoin'},
- {id:'cardano',symbol:'ADA',name:'Cardano'},{id:'avalanche-2',symbol:'AVAX',name:'Avalanche'},
- {id:'chainlink',symbol:'LINK',name:'Chainlink'},{id:'the-open-network',symbol:'TON',name:'Toncoin'}
-];
-const $=id=>document.getElementById(id);
-let mode='login', currentUser=null, prices={}, priceRows=[];
-const usersKey='oex_demo_users_v1', sessionKey='oex_demo_session_v1';
-function readUsers(){try{return JSON.parse(localStorage.getItem(usersKey)||'{}')}catch{return {}}}
-function holdingsKey(email){return 'oex_demo_holdings_'+email.toLowerCase()}
-function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:n<1?6:2}).format(Number(n)||0)}
-function qty(n){return Number(n).toLocaleString('en-US',{maximumFractionDigits:8})}
-async function hash(text){const data=new TextEncoder().encode(text);const digest=await crypto.subtle.digest('SHA-256',data);return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function showMode(){const signup=mode==='signup';$('formTitle').textContent=signup?'Create your account':'Welcome back';$('formSubtitle').textContent=signup?'Set up your OEX demo wallet.':'Sign in to view your OEX wallet.';$('nameField').classList.toggle('hidden',!signup);$('name').required=signup;$('submitAuth').textContent=signup?'Create account':'Sign in';$('switchText').textContent=signup?'Already have an account?':'New to OEX?';$('switchMode').textContent=signup?'Sign in':'Create account';$('authError').textContent=''}
-$('switchMode').onclick=()=>{mode=mode==='login'?'signup':'login';showMode()};
-$('authForm').onsubmit=async e=>{e.preventDefault();$('authError').textContent='';const email=$('email').value.trim().toLowerCase(),password=$('password').value;const users=readUsers(),key=email;try{const passHash=await hash(password);if(mode==='signup'){if(users[key])throw Error('An account with this email already exists.');users[key]={name:$('name').value.trim()||'OEX User',passHash};localStorage.setItem(usersKey,JSON.stringify(users));localStorage.setItem(holdingsKey(key),JSON.stringify({}));}else{if(!users[key]||users[key].passHash!==passHash)throw Error('Incorrect email or password.');}localStorage.setItem(sessionKey,key);openApp();}catch(err){$('authError').textContent=err.message||'Could not sign in. This browser may not support secure hashing.'}};
-function openApp(){const email=localStorage.getItem(sessionKey),users=readUsers();if(!email||!users[email])return;currentUser=email;$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('userLabel').textContent=users[email].name+' · '+email;populateCoinSelect();renderWallet();fetchPrices()}
-$('logout').onclick=()=>{localStorage.removeItem(sessionKey);currentUser=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden');$('password').value=''};
-function getHoldings(){try{return JSON.parse(localStorage.getItem(holdingsKey(currentUser))||'{}')}catch{return {}}}
-function setHoldings(h){localStorage.setItem(holdingsKey(currentUser),JSON.stringify(h))}
-function renderWallet(){const h=getHoldings(),entries=Object.entries(h).filter(([,v])=>Number(v)>0);$('assetCount').textContent=entries.length;let total=0;$('walletRows').innerHTML='';if(!entries.length)$('walletRows').innerHTML='<tr><td colspan="3" class="empty">No coins yet. Add a holding to get started.</td></tr>';for(const [id,amount] of entries){const c=COINS.find(x=>x.id===id);if(!c)continue;const p=prices[id]?.usd||0;total+=Number(amount)*p;const tr=document.createElement('tr');tr.innerHTML=`<td><div class="coin">${c.name}<span class="symbol">${c.symbol}</span></div></td><td class="right">${qty(amount)} ${c.symbol}</td><td class="right">${money(Number(amount)*p)}</td>`;$('walletRows').appendChild(tr)}$('totalValue').textContent=money(total)}
-function renderMarket(){if(!priceRows.length)return;$('marketRows').innerHTML='';for(const c of priceRows){const p=prices[c.id]||{},change=Number(p.usd_24h_change)||0;const tr=document.createElement('tr');const img=c.image?`<img src="${c.image}" alt="">`:'';tr.innerHTML=`<td><div class="coin">${img}${c.name}<span class="symbol">${c.symbol.toUpperCase()}</span></div></td><td class="right">${money(p.usd)}</td><td class="right ${change>=0?'positive':'negative'}">${change>=0?'+':''}${change.toFixed(2)}%</td>`;$('marketRows').appendChild(tr)}}
-async function fetchPrices(){ $('marketStatus').textContent='Updating prices…';try{const ids=COINS.map(c=>c.id).join(',');const url=`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(ids)}&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h`;const res=await fetch(url);if(!res.ok)throw Error('Market API returned '+res.status);const data=await res.json();priceRows=data;prices={};for(const c of data)prices[c.id]={usd:c.current_price,usd_24h_change:c.price_change_percentage_24h};renderMarket();renderWallet();$('updatedAt').textContent=new Date().toLocaleTimeString();$('marketStatus').textContent='Prices updated. CoinGecko data may be delayed or rate-limited.';}catch(err){$('marketStatus').textContent='Could not load prices right now. Try again shortly. '+err.message;$('updatedAt').textContent='Unavailable';}}
-function populateCoinSelect(){$('coinSelect').innerHTML=COINS.map(c=>`<option value="${c.id}">${c.name} (${c.symbol})</option>`).join('')}
-$('addHolding').onclick=()=>{$('holdingError').textContent='';$('coinAmount').value='';$('modal').classList.remove('hidden')};
-$('cancelHolding').onclick=()=> $('modal').classList.add('hidden');
-$('saveHolding').onclick=()=>{const id=$('coinSelect').value,amount=Number($('coinAmount').value);if(!Number.isFinite(amount)||amount<=0){$('holdingError').textContent='Enter a quantity greater than zero.';return}const h=getHoldings();h[id]=(Number(h[id])||0)+amount;setHoldings(h);renderWallet();$('modal').classList.add('hidden')};
-$('refresh').onclick=fetchPrices;
-if(localStorage.getItem(sessionKey)&&readUsers()[localStorage.getItem(sessionKey)])openApp();else showMode();
-setInterval(()=>{if(currentUser)fetchPrices()},60000);
+
+  // =====================================================
+  // SUPABASE CONFIGURATION
+  // =====================================================
+
+  const SUPABASE_URL = "https://fnyxxyohuywtatbjagyc.supabase.co/rest/v1/";
+
+  const sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj =
+    "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+
+  const { createClient } = supabase;
+
+  const supabaseClient = createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  // =====================================================
+  // AUTH UI
+  // =====================================================
+
+  let currentMode = "login";
+
+  function openModal(mode) {
+    document.getElementById("authModal").style.display = "flex";
+    switchMode(mode);
+  }
+
+  function closeModal() {
+    document.getElementById("authModal").style.display = "none";
+    document.getElementById("message").textContent = "";
+  }
+
+  function switchMode(mode) {
+
+    currentMode = mode;
+
+    const loginTab = document.getElementById("loginTab");
+    const signupTab = document.getElementById("signupTab");
+
+    const nameField = document.getElementById("nameField");
+    const authTitle = document.getElementById("authTitle");
+    const submitText = document.getElementById("submitText");
+
+    if (mode === "signup") {
+
+      signupTab.classList.add("active");
+      loginTab.classList.remove("active");
+
+      nameField.style.display = "block";
+
+      authTitle.textContent = "Create OEX Account";
+      submitText.textContent = "Create Account";
+
+    } else {
+
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
+
+      nameField.style.display = "none";
+
+      authTitle.textContent = "Login to OEX";
+      submitText.textContent = "Login";
+    }
+
+    document.getElementById("message").textContent = "";
+  }
+
+
+  // =====================================================
+  // SIGNUP / LOGIN
+  // =====================================================
+
+  document
+    .getElementById("authForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const displayName =
+        document.getElementById("displayName").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+      message.textContent = "Please wait...";
+
+      try {
+
+        if (currentMode === "signup") {
+
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+
+              email: email,
+
+              password: password,
+
+              options: {
+                data: {
+                  display_name:
+                    displayName || "OEX User"
+                }
+              }
+
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.session) {
+
+            message.textContent =
+              "Account created successfully. Redirecting...";
+
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 1000);
+
+          } else {
+
+            message.textContent =
+              "Account created. Check your email to confirm your account, then log in.";
+          }
+
+        } else {
+
+          const { data, error } =
+            await supabaseClient.auth.signInWithPassword({
+
+              email: email,
+
+              password: password
+
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          if (!data.session) {
+            throw new Error("Login session was not created.");
+          }
+
+          message.textContent =
+            "Login successful. Redirecting...";
+
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 500);
+
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          error.message || "Something went wrong.";
+
+      }
+
+    });
+
+
+  // =====================================================
+  // LIVE CRYPTO PRICES
+  // =====================================================
+
+  const coins = [
+    {
+      id: "bitcoin",
+      name: "Bitcoin",
+      symbol: "BTC"
+    },
+    {
+      id: "ethereum",
+      name: "Ethereum",
+      symbol: "ETH"
+    },
+    {
+      id: "tether",
+      name: "Tether",
+      symbol: "USDT"
+    },
+    {
+      id: "binancecoin",
+      name: "BNB",
+      symbol: "BNB"
+    },
+    {
+      id: "solana",
+      name: "Solana",
+      symbol: "SOL"
+    },
+    {
+      id: "usd-coin",
+      name: "USD Coin",
+      symbol: "USDC"
+    }
+  ];
+
+
+  async function loadPrices() {
+
+    const grid =
+      document.getElementById("marketGrid");
+
+    try {
+
+      const ids =
+        coins.map(c => c.id).join(",");
+
+      const response =
+        await fetch(
+          "https://api.coingecko.com/api/v3/coins/markets" +
+          "?vs_currency=usd" +
+          "&ids=" + ids +
+          "&order=market_cap_desc" +
+          "&per_page=20" +
+          "&page=1" +
+          "&sparkline=false" +
+          "&price_change_percentage=24h"
+        );
+
+      if (!response.ok) {
+        throw new Error("Price API unavailable");
+      }
+
+      const data = await response.json();
+
+      grid.innerHTML = "";
+
+      data.forEach(coin => {
+
+        const card =
+          document.createElement("div");
+
+        card.className = "coin";
+
+        const price =
+          Number(coin.current_price)
+            .toLocaleString(
+              "en-US",
+              {
+                style: "currency",
+                currency: "USD"
+              }
+            );
+
+        const change =
+          Number(
+            coin.price_change_percentage_24h || 0
+          ).toFixed(2);
+
+        card.innerHTML = `
+          <div class="coin-name">
+            ${coin.name} (${coin.symbol.toUpperCase()})
+          </div>
+
+          <div class="coin-price">
+            ${price}
+          </div>
+
+          <div style="margin-top:8px;color:${
+            change >= 0 ? "#25d366" : "#ff5c5c"
+          }">
+            ${change >= 0 ? "+" : ""}${change}%
+          </div>
+        `;
+
+        grid.appendChild(card);
+
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      grid.innerHTML =
+        "<p>Unable to load live prices right now.</p>";
+    }
+  }
+
+
+  loadPrices();
+
+  setInterval(loadPrices, 60000);
+
+
+  // =====================================================
+  // CHECK EXISTING SESSION
+  // =====================================================
+
+  async function checkSession() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session) {
+
+      // If already logged in, you can go directly
+      // to the dashboard.
+
+      // Uncomment this if you want automatic redirect:
+      //
+      // window.location.href = "dashboard.html";
+    }
+  }
+
+  checkSession();
+
 </script>
+
 </body>
 </html>
