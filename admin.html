@@ -144,7 +144,7 @@
 
   async function logout() {
     await supabaseClient.auth.signOut();
-    window.location.href = "/";
+    window.location.href = "/admin.html";
   }
 
   checkAdmin();
