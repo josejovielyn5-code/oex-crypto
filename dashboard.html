@@ -129,22 +129,23 @@ function showRecharge() {
     </p>
   `;
 }
-  async function loadUser() {
-    const {
-      data: { user }
-    } = await supabaseClient.auth.getUser();
+async function loadUser() {
+  const {
+    data: { user },
+    error
+  } = await supabaseClient.auth.getUser();
 
-    if (!user) {
-      window.location.href = "/oex-crypto/";
-      return;
-    }
-
-    document.getElementById("userEmail").textContent =
-      user.email || "";
-
-    document.getElementById("userName").textContent =
-      user.user_metadata?.display_name || "OEX User";
+  if (error || !user) {
+    window.location.href = "/oex-crypto/";
+    return;
   }
+
+  document.getElementById("userEmail").textContent =
+    user.email || "";
+
+  document.getElementById("userName").textContent =
+    user.user_metadata?.display_name || "OEX User";
+}
 
   async function logout() {
   await supabaseClient.auth.signOut();
