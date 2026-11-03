@@ -327,6 +327,7 @@
     "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
 
   const { createClient } = supabase;
+  let currentMode = "login";
 
   const supabaseClient = createClient(
     SUPABASE_URL,
