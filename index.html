@@ -326,7 +326,7 @@
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
    const createClient = supabase.createClient;
   
-  const supabaseClient = createClient(
+  const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
   );
