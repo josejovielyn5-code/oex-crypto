@@ -106,7 +106,29 @@
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
   );
+function showRecharge() {
+  document.getElementById("actionArea").innerHTML = `
+    <h3>Recharge USDT</h3>
 
+    <p class="muted">
+      Send USDT to the address below.
+    </p>
+
+    <div style="
+      background:#0b1020;
+      padding:15px;
+      border-radius:10px;
+      word-break:break-all;
+      margin:15px 0;
+    ">
+      0x6633c904fbb69ee62fc7209eca05a9152ed490fa
+    </div>
+
+    <p class="muted">
+      Make sure you send USDT on the correct network.
+    </p>
+  `;
+}
   async function loadUser() {
     const {
       data: { user }
