@@ -197,7 +197,23 @@ function showWithdrawal() {
       Submit Withdrawal
     </button>
 
-    <p id="withdrawMessage" class="muted"></p>
+   <div style="
+  background:#0b1020;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+">
+  <div style="display:flex;justify-content:space-between;">
+    <span>Gas Fee</span>
+    <strong>1 USDT</strong>
+  </div>
+</div>
+
+<p class="muted">
+  You will receive: <strong id="receiveAmount">0 USDT</strong>
+</p>
+
+<p id="withdrawMessage" class="muted"></p>
   `;
 }
 loadUser();
