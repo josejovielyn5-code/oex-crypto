@@ -135,7 +135,7 @@ function showRecharge() {
     } = await supabaseClient.auth.getUser();
 
     if (!user) {
-      window.location.href = "/oex-crypto/";
+      window.location.href = "/";
       return;
     }
 
@@ -148,7 +148,7 @@ function showRecharge() {
 
   async function logout() {
   await supabaseClient.auth.signOut();
-  window.location.href = "/oex-crypto/";
+  window.location.href = "/";
 }
 
 function showRecharge() {
