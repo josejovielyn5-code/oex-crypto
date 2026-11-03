@@ -99,8 +99,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
 
 <script>
-  const SUPABASE_URL = "https://fnyxxyohuywtatbjagyc.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
+  const SUPABASE_URL = "YOUR_SUPABASE_URL";
+  const SUPABASE_PUBLISHABLE_KEY = "YOUR_PUBLISHABLE_KEY";
 
   const supabaseClient = supabase.createClient(
     SUPABASE_URL,
@@ -174,48 +174,7 @@ function showRecharge() {
     </p>
   `;
 }
-function showWithdrawal() {
-  document.getElementById("actionArea").innerHTML = `
-    <h3>Withdraw USDT</h3>
 
-    <input
-      id="withdrawAddress"
-      type="text"
-      placeholder="USDT wallet address"
-      style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
-    >
-
-    <input
-      id="withdrawAmount"
-      type="number"
-      step="0.000001"
-      placeholder="Amount of USDT"
-      style="width:100%;padding:12px;margin:8px 0;box-sizing:border-box;"
-    >
-
-    <button onclick="submitWithdrawal()">
-      Submit Withdrawal
-    </button>
-
-   <div style="
-  background:#0b1020;
-  padding:12px;
-  border-radius:10px;
-  margin:10px 0;
-">
-  <div style="display:flex;justify-content:space-between;">
-    <span>Gas Fee</span>
-    <strong>1 USDT</strong>
-  </div>
-</div>
-
-<p class="muted">
-  You will receive: <strong id="receiveAmount">0 USDT</strong>
-</p>
-
-<p id="withdrawMessage" class="muted"></p>
-  `;
-}
 loadUser();
 
 </script>
