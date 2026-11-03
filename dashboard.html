@@ -82,15 +82,18 @@
   </div>
 
   <div class="card">
-    <div class="muted">Total Portfolio Balance</div>
-    <div class="balance">$0.00</div>
-  </div>
+  <div class="muted">USDT Balance</div>
+  <div class="balance" id="usdtBalance">0.00 USDT</div>
+</div>
 
   <div class="card">
-    <h2>Your Assets</h2>
-    <p class="muted">Your crypto balances will appear here.</p>
-  </div>
+  <h2>USDT</h2>
 
+  <button onclick="showRecharge()">Recharge</button>
+  <button onclick="showWithdrawal()">Withdrawal</button>
+
+  <div id="actionArea" style="margin-top:20px;"></div>
+</div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
@@ -122,12 +125,30 @@
   }
 
   async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "/oex-crypto/";
-  }
+  await supabaseClient.auth.signOut();
+  window.location.href = "/oex-crypto/";
+}
 
-  loadUser();
-</script>
+function showRecharge() {
+  document.getElementById("actionArea").innerHTML = `
+    <h3>Recharge USDT</h3>
 
-</body>
-</html>
+    <p class="muted">
+      Send USDT to the address below.
+    </p>
+
+    <div style="
+      background:#0b1020;
+      padding:15px;
+      border-radius:10px;
+      word-break:break-all;
+      margin:15px 0;
+    ">
+      0x6633c904fbb69ee62fc7209eca05a9152ed490fa
+    </div>
+
+      <p class="muted">
+      Make sure you send USDT on the correct network.
+    </p>
+  `;
+}
