@@ -325,10 +325,7 @@
 
   const sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj =
     "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
-
-  const { createClient } = supabase;
-  let currentMode = "login";
-
+  
   const supabaseClient = createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
@@ -339,7 +336,6 @@
   // AUTH UI
   // =====================================================
 
-  let currentMode = "login";
 
   function openModal(mode) {
     document.getElementById("authModal").style.display = "flex";
