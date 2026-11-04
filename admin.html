@@ -374,30 +374,26 @@ async function addBalance() {
 
   if (existingBalance) {
 
-    const newAmount =
-      Number(existingBalance.amount) + amount;
+  const newAmount =
+    Number(existingBalance.amount) + amount;
 
+  const { data: updatedBalance, error } =
+    await supabaseClient
+      .from("balances")
+      .update({
+        amount: newAmount,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", existingBalance.id)
+      .select()
+      .single();
 
-    const { error } =
-      await supabaseClient
-        .from("balances")
-        .update({
-          amount: newAmount,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", existingBalance.id);
-
-
-    if (error) {
-
-      message.textContent =
-        error.message;
-
-      message.className = "error";
-
-      return;
-    }
-
+  if (error || !updatedBalance) {
+    message.textContent =
+      error?.message || "Balance update failed.";
+    message.className = "error";
+    return;
+  }
   } else {
 
     const { error } =
