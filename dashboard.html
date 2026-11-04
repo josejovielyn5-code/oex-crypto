@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OEX Crypto</title>
 
-  <title>OEX Crypto Wallet</title>
-
-  <!-- Modern font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -15,1435 +12,794 @@
     rel="stylesheet"
   >
 
-  <style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     :root {
-      --bg: #060912;
-      --bg-soft: #0a101c;
-      --card: #0c1422;
-      --card-2: #0a111d;
-      --border: #1b2940;
-      --text: #f5f7fb;
-      --muted: #8996ad;
-      --blue: #3188ff;
-      --blue-hover: #2475e5;
-      --green: #20b889;
-      --red: #ef6262;
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #101828;
+      --muted: #667085;
+      --border: #e4e7ec;
+      --primary: #111827;
+      --green: #12b76a;
+      --red: #f04438;
+      --shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
     }
 
     body {
-      margin: 0;
-      font-family: "Inter", Arial, sans-serif;
-      background:
-        radial-gradient(
-          circle at top,
-          #101a2d 0%,
-          #070b14 42%,
-          #050810 100%
-        );
+      font-family: "Inter", sans-serif;
+      background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      font-size: 14px;
     }
 
     button,
     input,
     select {
-      font-family: inherit;
+      font: inherit;
     }
 
     button {
       cursor: pointer;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
+    /* HEADER */
 
-    header {
-      min-height: 72px;
-      padding: 12px 4%;
-      background: rgba(5, 9, 18, 0.96);
+    .header {
+      height: 68px;
+      background: #fff;
       border-bottom: 1px solid var(--border);
-
       display: flex;
       align-items: center;
       justify-content: space-between;
-
+      padding: 0 28px;
       position: sticky;
       top: 0;
-      z-index: 100;
-      backdrop-filter: blur(15px);
+      z-index: 50;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
+      font-size: 17px;
+      font-weight: 700;
     }
 
-    .oex-logo {
-      width: 38px;
-      height: 38px;
-
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #111827;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-
-      gap: 4px;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      padding: 6px;
     }
 
-    .oex-logo span {
-      background: #ffffff;
+    .logo span {
+      background: #fff;
       border-radius: 2px;
     }
 
-    .brand-divider {
-      width: 1px;
-      height: 30px;
-      background: #ffffff;
-      opacity: 0.35;
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-
-    .logout-button {
-      background: transparent;
-      border: 1px solid #2a3a55;
-      color: #dbe4f3;
-
+    .logout-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #344054;
       padding: 8px 14px;
       border-radius: 8px;
-
       font-size: 13px;
       font-weight: 600;
-
-      transition: 0.2s;
     }
 
-    .logout-button:hover {
-      border-color: var(--blue);
-      color: white;
+    .logout-btn:hover {
+      background: #f9fafb;
     }
 
-    /* =========================
-       NAVIGATION
-    ========================= */
+    /* TABS */
 
-    .tab-bar {
-      width: 100%;
-      background: rgba(7, 11, 20, 0.96);
+    .tabs {
+      background: #fff;
       border-bottom: 1px solid var(--border);
-
       display: flex;
       justify-content: center;
-
+      gap: 8px;
+      padding: 10px 20px;
       position: sticky;
-      top: 72px;
-      z-index: 90;
-
-      overflow-x: auto;
+      top: 68px;
+      z-index: 40;
     }
 
-    .tab-navigation {
-      width: 100%;
-      max-width: 1500px;
-
-      padding: 0 35px;
-
-      display: flex;
-      gap: 4px;
-    }
-
-    .tab-button {
-      position: relative;
-
+    .tab-btn {
       border: none;
       background: transparent;
-
-      color: var(--muted);
-
-      padding: 15px 17px;
-
+      color: #667085;
+      padding: 9px 24px;
+      border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
-
-      white-space: nowrap;
-
-      transition: 0.2s;
     }
 
-    .tab-button:hover {
-      color: white;
+    .tab-btn:hover {
+      background: #f2f4f7;
+      color: #101828;
     }
 
-    .tab-button.active {
-      color: white;
+    .tab-btn.active {
+      background: #111827;
+      color: #fff;
     }
 
-    .tab-button.active::after {
-      content: "";
+    /* MAIN */
 
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 0;
-
-      height: 2px;
-
-      background: var(--blue);
-      border-radius: 3px;
-    }
-
-    /* =========================
-       MAIN
-    ========================= */
-
-    main {
-      width: 100%;
-      max-width: 1500px;
-
-      margin: 26px auto;
-
-      padding: 0 35px 50px;
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
     }
 
     .tab-content {
       display: none;
-      animation: fadeIn 0.18s ease;
     }
 
     .tab-content.active {
       display: block;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(3px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* =========================
-       CARDS
-    ========================= */
-
-    .card {
-      background:
-        linear-gradient(
-          145deg,
-          rgba(14, 23, 39, 0.98),
-          rgba(8, 13, 24, 0.98)
-        );
-
-      border: 1px solid var(--border);
-
-      border-radius: 13px;
-
-      padding: 20px;
-
-      margin-bottom: 18px;
-
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.20);
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    /* =========================
-       PAGE HEADER
-    ========================= */
-
-    .page-heading {
-      margin-bottom: 18px;
-    }
-
-    .page-heading h1 {
-      margin: 0 0 5px;
-
-      font-size: 25px;
-      line-height: 1.2;
-
-      letter-spacing: -0.6px;
-    }
-
-    .page-heading p {
-      margin: 0;
-
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* =========================
-       DASHBOARD
-    ========================= */
-
-    .welcome-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 20px;
-
-      min-height: 145px;
-    }
-
-    .welcome-text {
-      min-width: 0;
-    }
+    /* WELCOME */
 
     .welcome {
-      color: var(--muted);
-
-      font-size: 13px;
-
-      margin-bottom: 6px;
+      margin-bottom: 22px;
     }
 
-    #userName {
-      margin: 0 0 6px;
-
-      font-size: 28px;
-      font-weight: 700;
-
-      letter-spacing: -0.7px;
-    }
-
-    #userEmail {
-      font-size: 13px;
-    }
-
-    .account-badge {
-      background: rgba(49, 136, 255, 0.10);
-
-      border: 1px solid rgba(49, 136, 255, 0.28);
-
-      color: #83b7ff;
-
-      padding: 8px 11px;
-
-      border-radius: 8px;
-
-      font-size: 12px;
-      font-weight: 600;
-
-      white-space: nowrap;
-    }
-
-    /* =========================
-       PORTFOLIO
-    ========================= */
-
-    .portfolio-card {
-      padding: 22px;
-    }
-
-    .portfolio-label {
-      color: var(--muted);
-
-      font-size: 13px;
-
-      margin-bottom: 7px;
-    }
-
-    .portfolio-value {
-      font-size: 30px;
-      font-weight: 700;
-
-      letter-spacing: -0.7px;
-
+    .welcome h1 {
+      font-size: 22px;
+      line-height: 1.3;
       margin-bottom: 5px;
     }
 
-    .portfolio-note {
-      font-size: 12px;
+    .welcome p {
       color: var(--muted);
-    }
-
-    /* =========================
-       BALANCES
-    ========================= */
-
-    .balance-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 14px;
-    }
-
-    .balance-box {
-      background: var(--card-2);
-
-      border: 1px solid var(--border);
-
-      border-radius: 11px;
-
-      padding: 17px;
-    }
-
-    .balance-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      margin-bottom: 13px;
-    }
-
-    .coin-name {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .coin-icon {
-      width: 31px;
-      height: 31px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      font-size: 12px;
-      font-weight: 700;
-
-      background: #27344b;
-    }
-
-    .coin-icon.usdt {
-      background: #159c74;
-    }
-
-    .coin-icon.eth {
-      background: #59647b;
-    }
-
-    .balance {
-      font-size: 23px;
-      font-weight: 700;
-
-      letter-spacing: -0.4px;
-    }
-
-    .balance-usd {
-      margin-top: 5px;
-
-      color: var(--muted);
-
-      font-size: 12px;
-    }
-
-    /* =========================
-       QUICK ACTIONS
-    ========================= */
-
-    .section-title {
-      margin: 0 0 14px;
-
-      font-size: 18px;
-      font-weight: 700;
-
-      letter-spacing: -0.2px;
-    }
-
-    .quick-actions {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 10px;
-    }
-
-    .quick-action {
-      border: 1px solid var(--border);
-
-      background: #0a111d;
-
-      color: #dce5f4;
-
-      border-radius: 10px;
-
-      padding: 14px 10px;
-
       font-size: 13px;
-      font-weight: 600;
-
-      transition: 0.2s;
     }
 
-    .quick-action:hover {
-      border-color: #31527c;
-      background: #0d1726;
+    /* PORTFOLIO */
+
+    .portfolio-card {
+      background: #111827;
+      color: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
     }
 
-    .quick-action-icon {
-      display: block;
-
-      font-size: 18px;
-
-      margin-bottom: 6px;
+    .portfolio-label {
+      color: #98a2b3;
+      font-size: 12px;
+      margin-bottom: 8px;
     }
 
-    /* =========================
-       ACTION PANEL
-    ========================= */
+    .portfolio-value {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
 
-    .action-panel {
-      background: #080e19;
+    .portfolio-note {
+      color: #98a2b3;
+      font-size: 12px;
+    }
 
+    /* GRID */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
       border: 1px solid var(--border);
-
-      border-radius: 11px;
-
-      padding: 18px;
-
-      margin-top: 14px;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow);
     }
 
-    .action-panel:empty {
-      display: none;
-    }
-
-    .action-header {
-      display: flex;
-      align-items: center;
-
-      gap: 11px;
-
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
       margin-bottom: 16px;
     }
 
-    .action-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
+    /* ASSETS */
 
-    .action-subtitle {
-      color: var(--muted);
-
-      font-size: 12px;
-
-      margin-top: 3px;
-    }
-
-    .action-button {
-      background: var(--blue);
-
-      border: none;
-
-      color: white;
-
-      padding: 10px 15px;
-
-      border-radius: 8px;
-
-      font-size: 13px;
-      font-weight: 600;
-
-      cursor: pointer;
-
-      transition: 0.2s;
-    }
-
-    .action-button:hover {
-      background: var(--blue-hover);
-    }
-
-    .secondary-button {
-      background: transparent;
-
-      border: 1px solid #2a3b57;
-
-      color: #dce5f4;
-
-      padding: 10px 15px;
-
-      border-radius: 8px;
-
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .secondary-button:hover {
-      border-color: var(--blue);
-    }
-
-    /* =========================
-       FORMS
-    ========================= */
-
-    .form-group {
-      margin-bottom: 13px;
-    }
-
-    .form-label {
-      display: block;
-
-      margin-bottom: 6px;
-
-      color: #aab6ca;
-
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    input,
-    select {
-      width: 100%;
-
-      background: #050a13;
-
-      border: 1px solid #27344c;
-
-      color: white;
-
-      padding: 11px 12px;
-
-      border-radius: 8px;
-
-      font-size: 13px;
-
-      outline: none;
-
-      transition: 0.2s;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--blue);
-    }
-
-    select {
-      appearance: auto;
-    }
-
-    .form-row {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 12px;
-    }
-
-    .form-actions {
-      display: flex;
-
-      gap: 9px;
-
-      margin-top: 16px;
-    }
-
-    /* =========================
-       ADDRESS
-    ========================= */
-
-    .address-box {
-      background: #050a13;
-
-      border: 1px solid #27344c;
-
-      padding: 13px;
-
-      border-radius: 8px;
-
-      word-break: break-all;
-
-      font-family: monospace;
-
-      color: #ffffff;
-
-      margin: 12px 0;
-
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .receive-address-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .receive-address-row .address-box {
-      flex: 1;
-      margin: 0;
-    }
-
-    /* =========================
-       ASSETS
-    ========================= */
-
-    .asset-list {
-      display: flex;
-      flex-direction: column;
-
-      gap: 9px;
-    }
-
-    .asset-row {
+    .asset-card {
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      background: #090f1b;
-
-      border: 1px solid var(--border);
-
-      border-radius: 10px;
-
-      padding: 14px 16px;
+      gap: 15px;
     }
 
     .asset-left {
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 12px;
+    }
+
+    .coin-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f2f4f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
     }
 
     .asset-name {
       font-weight: 600;
       font-size: 14px;
+      margin-bottom: 3px;
     }
 
     .asset-symbol {
       color: var(--muted);
-      font-size: 11px;
-      margin-top: 2px;
-    }
-
-    .asset-right {
-      text-align: right;
-    }
-
-    .asset-amount {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 12px;
     }
 
     .asset-value {
+      text-align: right;
+    }
+
+    .asset-balance {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .asset-usd {
       color: var(--muted);
-      font-size: 11px;
-      margin-top: 3px;
-    }
-
-    /* =========================
-       SWAP
-    ========================= */
-
-    .swap-box {
-      max-width: 550px;
-      margin: 0 auto;
-    }
-
-    .swap-input {
-      background: #090f1b;
-
-      border: 1px solid var(--border);
-
-      border-radius: 11px;
-
-      padding: 15px;
-
-      margin-bottom: 8px;
-    }
-
-    .swap-input-top {
-      display: flex;
-      justify-content: space-between;
-
-      margin-bottom: 9px;
-
-      color: var(--muted);
-
       font-size: 12px;
     }
 
-    .swap-input input {
-      border: none;
-      background: transparent;
+    /* ACTIONS */
 
-      padding: 0;
-
-      font-size: 24px;
-      font-weight: 600;
-    }
-
-    .swap-divider {
-      display: flex;
-      justify-content: center;
-
-      margin: -1px 0;
-      position: relative;
-      z-index: 2;
-    }
-
-    .swap-switch {
-      width: 34px;
-      height: 34px;
-
-      border-radius: 50%;
-
-      border: 4px solid #0c1422;
-
-      background: #27364e;
-
-      color: white;
-
-      font-size: 14px;
-    }
-
-    /* =========================
-       TRANSACTIONS
-    ========================= */
-
-    .transaction-list {
-      display: flex;
-      flex-direction: column;
-
-      gap: 8px;
-    }
-
-    .transaction-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      background: #090f1b;
-
-      border: 1px solid var(--border);
-
-      border-radius: 10px;
-
-      padding: 13px 15px;
-    }
-
-    .transaction-left {
-      display: flex;
-      align-items: center;
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 10px;
     }
 
-    .transaction-icon {
-      width: 32px;
-      height: 32px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      background: #18243a;
-
-      font-size: 14px;
+    .action-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 10px;
+      padding: 13px 8px;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 600;
     }
 
-    .transaction-name {
+    .action-btn:hover {
+      border-color: #98a2b3;
+      background: #f9fafb;
+    }
+
+    /* FORMS */
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #344054;
+      margin-bottom: 7px;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 12px;
+      outline: none;
+      background: #fff;
+      color: #101828;
+      font-size: 13px;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: #98a2b3;
+      box-shadow: 0 0 0 3px rgba(16, 24, 40, 0.05);
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 11px 14px;
+      background: #111827;
+      color: #fff;
       font-size: 13px;
       font-weight: 600;
     }
 
-    .transaction-date {
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 3px;
+    .primary-btn:hover {
+      background: #1f2937;
     }
 
-    .status {
-      display: inline-flex;
-
-      padding: 4px 7px;
-
-      border-radius: 6px;
-
-      font-size: 10px;
+    .secondary-btn {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 14px;
+      background: #fff;
+      color: #344054;
+      font-size: 13px;
       font-weight: 600;
     }
 
-    .status.pending {
-      background: rgba(246, 179, 67, 0.12);
-      color: #f2bc62;
-    }
+    /* RECEIVE */
 
-    .status.completed {
-      background: rgba(32, 184, 137, 0.12);
-      color: #4bd0a5;
-    }
-
-    .status.failed {
-      background: rgba(239, 98, 98, 0.12);
-      color: #f17d7d;
-    }
-
-    /* =========================
-       REFERRAL
-    ========================= */
-
-    .referral-content {
-      display: flex;
-      align-items: center;
-
-      gap: 14px;
-    }
-
-    .referral-icon {
-      width: 44px;
-      height: 44px;
-
-      flex-shrink: 0;
-
-      border-radius: 10px;
-
-      background: rgba(49, 136, 255, 0.12);
-
-      border: 1px solid rgba(49, 136, 255, 0.25);
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      color: #72acff;
-
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .referral-text h2 {
-      margin: 0 0 4px;
-
-      font-size: 19px;
-    }
-
-    .referral-text p {
-      margin: 0;
-
+    .address-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px;
+      word-break: break-all;
       font-size: 12px;
+      color: #344054;
       line-height: 1.5;
+      margin-bottom: 10px;
     }
 
-    .referral-link-box {
-      display: flex;
-
-      gap: 8px;
-
-      margin-top: 18px;
-    }
-
-    .referral-link-box input {
-      margin: 0;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .referral-code {
-      margin-top: 12px;
-
+    .copy-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 9px;
+      padding: 10px;
       font-size: 12px;
+      font-weight: 600;
     }
 
-    .referral-code strong {
-      color: white;
-      margin-left: 5px;
+    .copy-btn:hover {
+      background: #f9fafb;
     }
 
-    /* =========================
-       MARKET
-    ========================= */
+    /* REFERRAL */
 
-    .market-grid {
-      display: grid;
+    .referral-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
 
-      grid-template-columns:
-        repeat(3, 1fr);
+    .referral-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
 
+    .referral-value {
+      font-size: 13px;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    /* MARKET */
+
+    .market-list {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
 
-    .market-card {
-      background: #080e1b;
-
-      border: 1px solid var(--border);
-
-      border-radius: 10px;
-
-      padding: 14px;
-
-      min-height: 135px;
-    }
-
-    .market-header {
+    .market-row {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 9px;
+      border-bottom: 1px solid #f2f4f7;
+      padding-bottom: 10px;
     }
 
-    .market-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+    .market-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
 
     .market-name {
-      font-weight: 600;
       font-size: 13px;
+      font-weight: 600;
     }
 
     .market-symbol {
+      font-size: 11px;
       color: var(--muted);
-      font-size: 10px;
       margin-top: 2px;
     }
 
     .market-price {
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 18px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: right;
     }
 
-    .market-change {
-      margin-top: 5px;
-      font-size: 11px;
-    }
+    /* EMPTY */
 
-    .positive {
-      color: var(--green);
-    }
-
-    .negative {
-      color: var(--red);
-    }
-
-    /* =========================
-       EMPTY STATE
-    ========================= */
-
-    .empty-state {
+    .empty {
       text-align: center;
-
       padding: 35px 20px;
-
       color: var(--muted);
-    }
-
-    .empty-icon {
-      font-size: 27px;
-      margin-bottom: 8px;
-    }
-
-    .empty-state p {
-      margin: 0;
       font-size: 13px;
     }
 
-    /* =========================
-       TOAST
-    ========================= */
+    /* NOTICE */
 
-    #toast {
+    .notice {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    /* TOAST */
+
+    .toast {
       position: fixed;
-
-      left: 50%;
-      bottom: 25px;
-
-      transform: translateX(-50%) translateY(20px);
-
-      background: #17243a;
-
-      border: 1px solid #304461;
-
-      color: white;
-
-      padding: 10px 15px;
-
-      border-radius: 8px;
-
-      font-size: 13px;
-
+      right: 20px;
+      bottom: 20px;
+      background: #111827;
+      color: #fff;
+      padding: 12px 15px;
+      border-radius: 9px;
+      font-size: 12px;
       opacity: 0;
+      transform: translateY(10px);
       pointer-events: none;
-
-      transition: 0.25s;
-
-      z-index: 999;
+      transition: 0.25s ease;
+      z-index: 100;
     }
 
-    #toast.show {
+    .toast.show {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
     }
 
-    /* =========================
-       MOBILE
-    ========================= */
+    /* MOBILE */
 
-    @media (max-width: 900px) {
+    @media (max-width: 760px) {
 
-      .tab-navigation {
+      .header {
         padding: 0 15px;
       }
 
-      main {
-        padding: 0 15px 40px;
+      .tabs {
+        top: 68px;
+        padding: 9px 12px;
       }
 
-      .market-grid {
-        grid-template-columns:
-          repeat(2, 1fr);
+      .tab-btn {
+        flex: 1;
+        padding: 9px 12px;
       }
 
-    }
-
-    @media (max-width: 700px) {
-
-      header {
-        min-height: 64px;
-        padding: 10px 15px;
+      .container {
+        padding: 20px 14px 45px;
       }
 
-      .brand-divider {
-        display: none;
-      }
-
-      .brand-name {
-        font-size: 16px;
-      }
-
-      .oex-logo {
-        width: 34px;
-        height: 34px;
-      }
-
-      .tab-bar {
-        top: 64px;
-      }
-
-      .tab-button {
-        padding: 13px 12px;
-        font-size: 12px;
-      }
-
-      .welcome-card {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .account-badge {
-        align-self: flex-start;
-      }
-
-      .balance-grid {
+      .grid {
         grid-template-columns: 1fr;
       }
 
-      .quick-actions {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-
-      .referral-link-box {
-        flex-direction: column;
-      }
-
-      .referral-link-box .action-button {
-        width: 100%;
-      }
-
-      .receive-address-row {
-        flex-direction: column;
-      }
-
-      .market-grid {
-        grid-template-columns: 1fr;
-      }
-
-    }
-
-    @media (max-width: 450px) {
-
-      main {
-        margin-top: 18px;
-      }
-
-      .card {
-        padding: 16px;
-      }
-
-      #userName {
-        font-size: 24px;
+      .actions {
+        grid-template-columns: repeat(2, 1fr);
       }
 
       .portfolio-value {
-        font-size: 26px;
+        font-size: 27px;
       }
-
-      .balance {
-        font-size: 21px;
-      }
-
-      .tab-navigation {
-        padding: 0 8px;
-      }
-
-      .tab-button {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
-
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================= -->
+  <div class="app">
 
-  <header>
+    <!-- HEADER -->
 
-    <div class="brand">
+    <header class="header">
 
-      <div class="oex-logo">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+      <div class="brand">
+
+        <div class="logo">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <span>OEX Crypto</span>
+
       </div>
-
-      <div class="brand-divider"></div>
-
-      <div class="brand-name">
-        OEX Crypto
-      </div>
-
-    </div>
-
-    <button
-      class="logout-button"
-      onclick="logout()">
-      Log Out
-    </button>
-
-  </header>
-
-
-  <!-- =========================
-       TAB NAVIGATION
-  ========================= -->
-
-  <div class="tab-bar">
-
-    <nav class="tab-navigation">
 
       <button
-        class="tab-button active"
+        class="logout-btn"
+        id="logoutBtn"
+      >
+        Logout
+      </button>
+
+    </header>
+
+
+    <!-- ONLY 2 TABS -->
+
+    <nav class="tabs">
+
+      <button
+        class="tab-btn active"
         data-tab="dashboard"
-        onclick="showTab('dashboard', this)">
+      >
         Dashboard
       </button>
 
       <button
-        class="tab-button"
+        class="tab-btn"
         data-tab="assets"
-        onclick="showTab('assets', this)">
+      >
         Assets
-      </button>
-
-      <button
-        class="tab-button"
-        data-tab="send"
-        onclick="showTab('send', this)">
-        Send
-      </button>
-
-      <button
-        class="tab-button"
-        data-tab="receive"
-        onclick="showTab('receive', this)">
-        Receive
-      </button>
-
-      <button
-        class="tab-button"
-        data-tab="swap"
-        onclick="showTab('swap', this)">
-        Swap
-      </button>
-
-      <button
-        class="tab-button"
-        data-tab="transactions"
-        onclick="showTab('transactions', this)">
-        Transactions
-      </button>
-
-      <button
-        class="tab-button"
-        data-tab="referral"
-        onclick="showTab('referral', this)">
-        Referral
       </button>
 
     </nav>
 
-  </div>
+
+    <main class="container">
 
 
-  <main>
+      <!-- =====================================================
+           DASHBOARD
+      ====================================================== -->
 
-    <!-- ==================================================
-         DASHBOARD TAB
-    ================================================== -->
+      <section
+        id="dashboard"
+        class="tab-content active"
+      >
 
-    <div
-      id="dashboardTab"
-      class="tab-content active">
+        <div class="welcome">
 
-      <section class="card welcome-card">
-
-        <div class="welcome-text">
-
-          <div class="welcome">
+          <h1>
             Welcome back
-          </div>
-
-          <h1 id="userName">
-            OEX User
           </h1>
 
+          <p id="userEmail">
+            Loading account...
+          </p>
+
+        </div>
+
+
+        <!-- PORTFOLIO BALANCE -->
+
+        <div class="portfolio-card">
+
+          <div class="portfolio-label">
+            Estimated Portfolio Balance
+          </div>
+
           <div
-            id="userEmail"
-            class="muted">
+            class="portfolio-value"
+            id="portfolioValue"
+          >
+            $0.00
+          </div>
+
+          <div class="portfolio-note">
+            Based on USDT balance only
           </div>
 
         </div>
 
-        <div class="account-badge">
-          Account Active
-        </div>
 
-      </section>
+        <!-- BALANCES -->
 
-
-      <section class="card portfolio-card">
-
-        <div class="portfolio-label">
-          Estimated Portfolio Value
-        </div>
-
-        <div
-          id="portfolioValue"
-          class="portfolio-value">
-          $0.00
-        </div>
-
-        <div class="portfolio-note">
-          Based on available wallet balances
-        </div>
-
-      </section>
+        <div class="grid">
 
 
-      <section class="card">
+          <!-- USDT -->
 
-        <h2 class="section-title">
-          Your Balances
-        </h2>
+          <div class="card">
 
-        <div class="balance-grid">
+            <div class="card-title">
+              USDT Balance
+            </div>
 
-          <div class="balance-box">
+            <div class="asset-card">
 
-            <div class="balance-top">
+              <div class="asset-left">
 
-              <div class="coin-name">
-
-                <div class="coin-icon usdt">
-                  T
+                <div class="coin-icon">
+                  ₮
                 </div>
 
-                USDT
+                <div>
+
+                  <div class="asset-name">
+                    Tether
+                  </div>
+
+                  <div class="asset-symbol">
+                    USDT
+                  </div>
+
+                </div>
 
               </div>
 
-              <span class="muted">
-                Tether
-              </span>
 
-            </div>
+              <div class="asset-value">
 
-            <div
-              id="usdtBalance"
-              class="balance">
-              0.000000 USDT
-            </div>
+                <div
+                  class="asset-balance"
+                  id="usdtBalance"
+                >
+                  0.00 USDT
+                </div>
 
-            <div
-              id="usdtUsd"
-              class="balance-usd">
-              $0.00
+                <div
+                  class="asset-usd"
+                  id="usdtUsd"
+                >
+                  $0.00
+                </div>
+
+              </div>
+
             </div>
 
           </div>
 
 
-          <div class="balance-box">
+          <!-- ETH -->
 
-            <div class="balance-top">
+          <div class="card">
 
-              <div class="coin-name">
+            <div class="card-title">
+              ETH Balance
+            </div>
 
-                <div class="coin-icon eth">
+            <div class="asset-card">
+
+              <div class="asset-left">
+
+                <div class="coin-icon">
                   Ξ
                 </div>
 
-                ETH
+                <div>
+
+                  <div class="asset-name">
+                    Ethereum
+                  </div>
+
+                  <div class="asset-symbol">
+                    ETH
+                  </div>
+
+                </div>
 
               </div>
 
-              <span class="muted">
-                Ethereum
-              </span>
+
+              <div class="asset-value">
+
+                <div
+                  class="asset-balance"
+                  id="ethBalance"
+                >
+                  0.00 ETH
+                </div>
+
+                <div
+                  class="asset-usd"
+                  id="ethUsd"
+                >
+                  $0.00
+                </div>
+
+              </div>
 
             </div>
 
-            <div
-              id="ethBalance"
-              class="balance">
-              0.000000 ETH
-            </div>
+          </div>
 
-            <div
-              id="ethUsd"
-              class="balance-usd">
-              $0.00
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div
+          class="card"
+          style="margin-bottom:20px;"
+        >
+
+          <div class="card-title">
+            Quick Actions
+          </div>
+
+          <div class="actions">
+
+            <button
+              class="action-btn"
+              onclick="goToAssets('send')"
+            >
+              Send
+            </button>
+
+            <button
+              class="action-btn"
+              onclick="goToAssets('receive')"
+            >
+              Receive
+            </button>
+
+            <button
+              class="action-btn"
+              onclick="goToAssets('swap')"
+            >
+              Swap
+            </button>
+
+            <button
+              class="action-btn"
+              onclick="goToAssets('transactions')"
+            >
+              Transactions
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- MARKET -->
+
+        <div class="card">
+
+          <div class="card-title">
+            Market Prices
+          </div>
+
+          <div
+            id="marketList"
+            class="market-list"
+          >
+
+            <div class="empty">
+              Loading market prices...
             </div>
 
           </div>
@@ -1453,829 +809,622 @@
       </section>
 
 
-      <section class="card">
+      <!-- =====================================================
+           ASSETS
+      ====================================================== -->
 
-        <h2 class="section-title">
-          Quick Actions
-        </h2>
+      <section
+        id="assets"
+        class="tab-content"
+      >
 
-        <div class="quick-actions">
+        <div class="welcome">
 
-          <button
-            class="quick-action"
-            onclick="showTab('send')">
-
-            <span class="quick-action-icon">
-              ↑
-            </span>
-
-            Send
-
-          </button>
-
-          <button
-            class="quick-action"
-            onclick="showTab('receive')">
-
-            <span class="quick-action-icon">
-              ↓
-            </span>
-
-            Receive
-
-          </button>
-
-          <button
-            class="quick-action"
-            onclick="showTab('swap')">
-
-            <span class="quick-action-icon">
-              ⇄
-            </span>
-
-            Swap
-
-          </button>
-
-          <button
-            class="quick-action"
-            onclick="showTab('assets')">
-
-            <span class="quick-action-icon">
-              ◈
-            </span>
-
+          <h1>
             Assets
+          </h1>
 
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <section class="card">
-
-        <h2 class="section-title">
-          Market Prices
-        </h2>
-
-        <div
-          id="dashboardMarketGrid"
-          class="market-grid">
-
-          Loading market prices...
+          <p>
+            Manage your crypto balances and wallet activity.
+          </p>
 
         </div>
 
-      </section>
 
-    </div>
+        <!-- ASSET BALANCES -->
 
+        <div class="grid">
 
-    <!-- ==================================================
-         ASSETS TAB
-    ================================================== -->
 
-    <div
-      id="assetsTab"
-      class="tab-content">
+          <!-- USDT -->
 
-      <div class="page-heading">
+          <div class="card">
 
-        <h1>
-          Assets
-        </h1>
-
-        <p>
-          Manage your available crypto balances.
-        </p>
-
-      </div>
-
-
-      <section class="card portfolio-card">
-
-        <div class="portfolio-label">
-          Total estimated value
-        </div>
-
-        <div
-          id="assetsPortfolioValue"
-          class="portfolio-value">
-          $0.00
-        </div>
-
-      </section>
-
-
-      <section class="card">
-
-        <div class="asset-list">
-
-          <div class="asset-row">
-
-            <div class="asset-left">
-
-              <div class="coin-icon usdt">
-                T
-              </div>
-
-              <div>
-
-                <div class="asset-name">
-                  Tether
-                </div>
-
-                <div class="asset-symbol">
-                  USDT
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="asset-right">
-
-              <div
-                id="assetUsdtAmount"
-                class="asset-amount">
-                0.000000 USDT
-              </div>
-
-              <div
-                id="assetUsdtValue"
-                class="asset-value">
-                $0.00
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="asset-row">
-
-            <div class="asset-left">
-
-              <div class="coin-icon eth">
-                Ξ
-              </div>
-
-              <div>
-
-                <div class="asset-name">
-                  Ethereum
-                </div>
-
-                <div class="asset-symbol">
-                  ETH
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="asset-right">
-
-              <div
-                id="assetEthAmount"
-                class="asset-amount">
-                0.000000 ETH
-              </div>
-
-              <div
-                id="assetEthValue"
-                class="asset-value">
-                $0.00
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- ==================================================
-         SEND TAB
-    ================================================== -->
-
-    <div
-      id="sendTab"
-      class="tab-content">
-
-      <div class="page-heading">
-
-        <h1>
-          Send Crypto
-        </h1>
-
-        <p>
-          Enter the destination wallet and amount.
-        </p>
-
-      </div>
-
-
-      <section class="card">
-
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label class="form-label">
-              Asset
-            </label>
-
-            <select id="sendAsset">
-
-              <option value="USDT">
-                USDT
-              </option>
-
-              <option value="ETH">
-                ETH
-              </option>
-
-            </select>
-
-          </div>
-
-
-          <div class="form-group">
-
-            <label class="form-label">
-              Amount
-            </label>
-
-            <input
-              id="sendAmount"
-              type="number"
-              min="0"
-              step="0.000001"
-              placeholder="0.00">
-
-          </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label class="form-label">
-            Destination address
-          </label>
-
-          <input
-            id="sendAddress"
-            type="text"
-            placeholder="Enter wallet address">
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label class="form-label">
-            Network
-          </label>
-
-          <select id="sendNetwork">
-
-            <option value="ethereum">
-              Ethereum
-            </option>
-
-            <option value="bsc">
-              BNB Smart Chain
-            </option>
-
-            <option value="polygon">
-              Polygon
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="form-actions">
-
-          <button
-            class="action-button"
-            onclick="prepareSend()">
-
-            Review Send
-
-          </button>
-
-        </div>
-
-        <div
-          id="sendMessage"
-          class="muted"
-          style="margin-top:12px;">
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- ==================================================
-         RECEIVE TAB
-    ================================================== -->
-
-    <div
-      id="receiveTab"
-      class="tab-content">
-
-      <div class="page-heading">
-
-        <h1>
-          Receive Crypto
-        </h1>
-
-        <p>
-          Use the address below to receive supported assets.
-        </p>
-
-      </div>
-
-
-      <section class="card">
-
-        <div class="form-group">
-
-          <label class="form-label">
-            Asset
-          </label>
-
-          <select
-            id="receiveAsset"
-            onchange="updateReceiveAddress()">
-
-            <option value="USDT">
+            <div class="card-title">
               USDT
-            </option>
+            </div>
 
-            <option value="ETH">
-              ETH
-            </option>
+            <div class="asset-card">
 
-          </select>
+              <div class="asset-left">
 
-        </div>
+                <div class="coin-icon">
+                  ₮
+                </div>
 
+                <div>
 
-        <div class="form-group">
+                  <div class="asset-name">
+                    Tether
+                  </div>
 
-          <label class="form-label">
-            Network
-          </label>
+                  <div class="asset-symbol">
+                    USDT
+                  </div>
 
-          <select
-            id="receiveNetwork"
-            onchange="updateReceiveAddress()">
+                </div>
 
-            <option value="ethereum">
-              Ethereum
-            </option>
-
-            <option value="bsc">
-              BNB Smart Chain
-            </option>
-
-          </select>
-
-        </div>
+              </div>
 
 
-        <div class="address-box">
-          <span id="receiveAddress">
-            0x6633c904fbb69ee62fc7209eca05a9152ed490fa
-          </span>
-        </div>
+              <div class="asset-value">
 
+                <div
+                  class="asset-balance"
+                  id="assetsUsdtBalance"
+                >
+                  0.00 USDT
+                </div>
 
-        <div class="form-actions">
+                <div
+                  class="asset-usd"
+                  id="assetsUsdtUsd"
+                >
+                  $0.00
+                </div>
 
-          <button
-            class="action-button"
-            onclick="copyReceiveAddress()">
-
-            Copy Address
-
-          </button>
-
-        </div>
-
-
-        <p
-          class="muted"
-          style="margin:13px 0 0; line-height:1.6;">
-
-          Only send an asset using a network supported by your wallet.
-          Sending an unsupported asset or network may result in permanent loss.
-
-        </p>
-
-      </section>
-
-    </div>
-
-
-    <!-- ==================================================
-         SWAP TAB
-    ================================================== -->
-
-    <div
-      id="swapTab"
-      class="tab-content">
-
-      <div class="page-heading">
-
-        <h1>
-          Swap
-        </h1>
-
-        <p>
-          Exchange one supported asset for another.
-        </p>
-
-      </div>
-
-
-      <section class="card">
-
-        <div class="swap-box">
-
-          <div class="swap-input">
-
-            <div class="swap-input-top">
-
-              <span>
-                You pay
-              </span>
-
-              <span id="swapBalanceText">
-                Balance: 0.000000
-              </span>
+              </div>
 
             </div>
 
-            <div class="form-row">
+          </div>
+
+
+          <!-- ETH -->
+
+          <div class="card">
+
+            <div class="card-title">
+              ETH
+            </div>
+
+            <div class="asset-card">
+
+              <div class="asset-left">
+
+                <div class="coin-icon">
+                  Ξ
+                </div>
+
+                <div>
+
+                  <div class="asset-name">
+                    Ethereum
+                  </div>
+
+                  <div class="asset-symbol">
+                    ETH
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="asset-value">
+
+                <div
+                  class="asset-balance"
+                  id="assetsEthBalance"
+                >
+                  0.00 ETH
+                </div>
+
+                <div
+                  class="asset-usd"
+                  id="assetsEthUsd"
+                >
+                  $0.00
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- SEND / RECEIVE -->
+
+        <div class="grid">
+
+
+          <!-- SEND -->
+
+          <div class="card">
+
+            <div class="card-title">
+              Send Crypto
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Asset
+              </label>
+
+              <select
+                class="select"
+                id="sendAsset"
+              >
+
+                <option value="USDT">
+                  USDT
+                </option>
+
+                <option value="ETH">
+                  ETH
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Recipient Address
+              </label>
 
               <input
+                class="input"
+                id="sendAddress"
+                type="text"
+                placeholder="Enter wallet address"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Amount
+              </label>
+
+              <input
+                class="input"
+                id="sendAmount"
+                type="number"
+                min="0"
+                step="any"
+                placeholder="0.00"
+              >
+
+            </div>
+
+
+            <button
+              class="primary-btn"
+              onclick="handleSend()"
+            >
+              Send
+            </button>
+
+            <div class="notice">
+              Send requests are currently UI-only and do not execute a blockchain transaction.
+            </div>
+
+          </div>
+
+
+          <!-- RECEIVE -->
+
+          <div class="card">
+
+            <div class="card-title">
+              Receive USDT
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Your USDT Address
+              </label>
+
+              <div
+                class="address-box"
+                id="receiveAddress"
+              >
+                0x6633c904fbb69ee62fc7209eca05a9152ed490fa
+              </div>
+
+
+              <button
+                class="copy-btn"
+                onclick="copyAddress()"
+              >
+                Copy Address
+              </button>
+
+            </div>
+
+
+            <div class="notice">
+              Only send supported assets to this address. Sending unsupported assets may result in permanent loss.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- SWAP / WITHDRAW -->
+
+        <div class="grid">
+
+
+          <!-- SWAP -->
+
+          <div class="card">
+
+            <div class="card-title">
+              Swap
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                From
+              </label>
+
+              <select
+                class="select"
+                id="swapFrom"
+              >
+
+                <option value="USDT">
+                  USDT
+                </option>
+
+                <option value="ETH">
+                  ETH
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                To
+              </label>
+
+              <select
+                class="select"
+                id="swapTo"
+              >
+
+                <option value="ETH">
+                  ETH
+                </option>
+
+                <option value="USDT">
+                  USDT
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Amount
+              </label>
+
+              <input
+                class="input"
                 id="swapAmount"
                 type="number"
                 min="0"
-                step="0.000001"
-                placeholder="0.00">
-
-              <select id="swapFrom">
-
-                <option value="USDT">
-                  USDT
-                </option>
-
-                <option value="ETH">
-                  ETH
-                </option>
-
-              </select>
+                step="any"
+                placeholder="0.00"
+              >
 
             </div>
 
-          </div>
-
-
-          <div class="swap-divider">
 
             <button
-              class="swap-switch"
-              onclick="switchSwapAssets()">
-
-              ⇅
-
+              class="primary-btn"
+              onclick="handleSwap()"
+            >
+              Swap
             </button>
+
+
+            <div class="notice">
+              Swap is currently UI-only and does not execute a blockchain transaction.
+            </div>
 
           </div>
 
 
-          <div class="swap-input">
+          <!-- WITHDRAW -->
 
-            <div class="swap-input-top">
+          <div class="card">
 
-              <span>
-                You receive
-              </span>
-
-              <span>
-                Estimated
-              </span>
-
+            <div class="card-title">
+              Withdraw
             </div>
 
-            <div class="form-row">
+
+            <div class="form-group">
+
+              <label>
+                Withdrawal Address
+              </label>
 
               <input
-                id="swapReceiveAmount"
+                class="input"
+                id="withdrawAddress"
                 type="text"
-                placeholder="—"
-                readonly>
-
-              <select id="swapTo">
-
-                <option value="ETH">
-                  ETH
-                </option>
-
-                <option value="USDT">
-                  USDT
-                </option>
-
-              </select>
+                placeholder="Enter wallet address"
+              >
 
             </div>
 
-          </div>
 
+            <div class="form-group">
 
-          <div
-            id="swapMessage"
-            class="muted"
-            style="margin-top:12px;">
-          </div>
+              <label>
+                Amount
+              </label>
 
+              <input
+                class="input"
+                id="withdrawAmount"
+                type="number"
+                min="0"
+                step="any"
+                placeholder="0.00 USDT"
+              >
 
-          <div class="form-actions">
+            </div>
+
 
             <button
-              class="action-button"
-              onclick="prepareSwap()">
-
-              Review Swap
-
+              class="primary-btn"
+              onclick="handleWithdrawal()"
+            >
+              Request Withdrawal
             </button>
 
-          </div>
 
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- ==================================================
-         TRANSACTIONS TAB
-    ================================================== -->
-
-    <div
-      id="transactionsTab"
-      class="tab-content">
-
-      <div class="page-heading">
-
-        <h1>
-          Transactions
-        </h1>
-
-        <p>
-          Your recent wallet activity.
-        </p>
-
-      </div>
-
-
-      <section class="card">
-
-        <div
-          id="transactionList"
-          class="transaction-list">
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              ◷
+            <div class="notice">
+              Withdrawal currently creates a request notification only. It does not send funds on-chain.
             </div>
 
-            <p>
-              No transactions recorded yet.
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
-
-
-    <!-- ==================================================
-         REFERRAL TAB
-    ================================================== -->
-
-    <div
-      id="referralTab"
-      class="tab-content">
-
-      <div class="page-heading">
-
-        <h1>
-          Referral
-        </h1>
-
-        <p>
-          Invite friends and earn eligible referral commissions.
-        </p>
-
-      </div>
-
-
-      <section class="card">
-
-        <div class="referral-content">
-
-          <div class="referral-icon">
-            %
-          </div>
-
-          <div class="referral-text">
-
-            <h2>
-              Invite & Earn
-            </h2>
-
-            <p class="muted">
-              Share your referral link with friends.
-              Eligible referral rewards can be tracked here.
-            </p>
-
           </div>
 
         </div>
 
 
-        <div class="referral-link-box">
+        <!-- TRANSACTIONS -->
 
-          <input
-            id="referralLink"
-            type="text"
-            value="https://oex-crypto.vercel.app/signup?rf=OEX-CCA701F7"
-            readonly>
+        <div
+          class="card"
+          id="transactionsSection"
+          style="margin-bottom:20px;"
+        >
+
+          <div class="card-title">
+            Transactions
+          </div>
+
+          <div class="empty">
+            No transactions available yet.
+          </div>
+
+        </div>
+
+
+        <!-- REFERRAL -->
+
+        <div class="card">
+
+          <div class="card-title">
+            Referral
+          </div>
+
+
+          <div class="referral-box">
+
+            <div class="referral-label">
+              Referral Code
+            </div>
+
+            <div class="referral-value">
+              OEX-CCA701F7
+            </div>
+
+          </div>
+
+
+          <div class="referral-box">
+
+            <div class="referral-label">
+              Referral Link
+            </div>
+
+            <div class="referral-value">
+              https://oex-crypto.vercel.app/signup?rf=0EX-CCA701F7
+            </div>
+
+          </div>
+
 
           <button
-            class="action-button"
-            onclick="copyReferralLink()">
-
-            Copy Link
-
+            class="secondary-btn"
+            style="width:100%;"
+            onclick="copyReferral()"
+          >
+            Copy Referral Link
           </button>
 
         </div>
 
-
-        <div class="referral-code">
-
-          <span class="muted">
-            Referral Code:
-          </span>
-
-          <strong>
-            OEX-CCA701F7
-          </strong>
-
-        </div>
-
       </section>
 
-    </div>
-
-  </main>
+    </main>
 
 
-  <div id="toast"></div>
+    <div
+      class="toast"
+      id="toast"
+    ></div>
 
-
-  <!-- =========================
-       SUPABASE
-  ========================= -->
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+  </div>
 
 
   <script>
 
-    /* ==========================================
-       SUPABASE CONFIGURATION
-    ========================================== */
+    /* =========================================================
+       SUPABASE CONFIG
+    ========================================================= */
 
     const SUPABASE_URL =
       "https://fnyxxyohuywtatbjagyc.supabase.co";
 
-    const SUPABASE_PUBLISHABLE_KEY =
+    const SUPABASE_KEY =
       "sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
 
     const supabaseClient =
-      supabase.createClient(
+      window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_KEY
       );
 
 
-    /* ==========================================
-       WALLET STATE
-    ========================================== */
+    /* =========================================================
+       CONSTANTS
+    ========================================================= */
 
-    let walletBalances = {
-      USDT: 0,
-      ETH: 0
-    };
+    const USDT_ADDRESS =
+      "0x6633c904fbb69ee62fc7209eca05a9152ed490fa";
 
-    let marketPrices = {
-      USDT: 1,
-      ETH: 0
-    };
+    const REFERRAL_LINK =
+      "https://oex-crypto.vercel.app/signup?rf=0EX-CCA701F7";
 
 
-    /* ==========================================
-       TAB NAVIGATION
-    ========================================== */
+    let currentUser = null;
 
-    function showTab(tabName, clickedButton = null) {
+    let usdtBalance = 0;
+    let ethBalance = 0;
 
-      document
-        .querySelectorAll(".tab-content")
-        .forEach(tab => {
-
-          tab.classList.remove("active");
-
-        });
+    let usdtPrice = 1;
+    let ethPrice = 0;
 
 
-      document
-        .querySelectorAll(".tab-button")
-        .forEach(button => {
+    /* =========================================================
+       TABS
+    ========================================================= */
 
-          button.classList.remove("active");
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach(button => {
 
-        });
+        button.addEventListener(
+          "click",
+          () => {
 
+            const tabName =
+              button.dataset.tab;
 
-      const selectedTab =
-        document.getElementById(
-          tabName + "Tab"
+            document
+              .querySelectorAll(".tab-btn")
+              .forEach(btn => {
+                btn.classList.remove("active");
+              });
+
+            document
+              .querySelectorAll(".tab-content")
+              .forEach(section => {
+                section.classList.remove("active");
+              });
+
+            button.classList.add("active");
+
+            const section =
+              document.getElementById(tabName);
+
+            if (section) {
+              section.classList.add("active");
+            }
+
+          }
         );
 
-      if (selectedTab) {
-        selectedTab.classList.add("active");
-      }
-
-
-      if (clickedButton) {
-
-        clickedButton.classList.add("active");
-
-      } else {
-
-        const matchingButton =
-          document.querySelector(
-            `.tab-button[data-tab="${tabName}"]`
-          );
-
-        if (matchingButton) {
-          matchingButton.classList.add("active");
-        }
-
-      }
-
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
       });
 
 
-      if (tabName === "swap") {
-        updateSwapBalance();
+    function goToAssets(action) {
+
+      const assetsTab =
+        document.querySelector(
+          '[data-tab="assets"]'
+        );
+
+      if (assetsTab) {
+        assetsTab.click();
       }
+
+      setTimeout(() => {
+
+        if (action === "transactions") {
+
+          const transactionSection =
+            document.getElementById(
+              "transactionsSection"
+            );
+
+          if (transactionSection) {
+
+            transactionSection.scrollIntoView({
+              behavior: "smooth"
+            });
+
+          }
+
+        }
+
+      }, 100);
 
     }
 
 
-    /* ==========================================
+    /* =========================================================
        TOAST
-    ========================================== */
-
-    let toastTimer = null;
+    ========================================================= */
 
     function showToast(message) {
 
@@ -2286,25 +1435,650 @@
 
       toast.classList.add("show");
 
-      clearTimeout(toastTimer);
+      setTimeout(() => {
 
-      toastTimer =
-        setTimeout(() => {
+        toast.classList.remove("show");
 
-          toast.classList.remove("show");
-
-        }, 2500);
+      }, 2500);
 
     }
 
 
-    /* ==========================================
-       FORMAT USD
-    ========================================== */
+    /* =========================================================
+       AUTH
+    ========================================================= */
 
-    function formatUSD(value) {
+    async function loadUser() {
 
-      return Number(value || 0).toLocaleString(
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (error || !data.user) {
+
+        window.location.href =
+          "/oex-crypto/";
+
+        return;
+      }
+
+
+      currentUser =
+        data.user;
+
+
+      document.getElementById(
+        "userEmail"
+      ).textContent =
+        currentUser.email ||
+        "Your OEX Crypto account";
+
+
+      await loadBalances();
+
+    }
+
+
+    /* =========================================================
+       LOAD BALANCES
+    ========================================================= */
+
+    async function loadBalances() {
+
+      if (!currentUser) {
+        return;
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("balances")
+          .select(`
+            balance,
+            coins (
+              symbol
+            )
+          `)
+          .eq(
+            "user_id",
+            currentUser.id
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Balance error:",
+          error
+        );
+
+        showToast(
+          "Unable to load balances"
+        );
+
+        return;
+      }
+
+
+      usdtBalance = 0;
+      ethBalance = 0;
+
+
+      if (Array.isArray(data)) {
+
+        data.forEach(row => {
+
+          const symbol =
+            row.coins?.symbol
+              ?.toUpperCase();
+
+          const amount =
+            Number(
+              row.balance || 0
+            );
+
+
+          if (symbol === "USDT") {
+
+            usdtBalance =
+              amount;
+
+          }
+
+
+          if (symbol === "ETH") {
+
+            ethBalance =
+              amount;
+
+          }
+
+        });
+
+      }
+
+
+      updateBalanceUI();
+
+    }
+
+
+    /* =========================================================
+       UPDATE BALANCES
+    ========================================================= */
+
+    function updateBalanceUI() {
+
+      /*
+        IMPORTANT:
+
+        Estimated Portfolio Balance
+        uses USDT ONLY.
+
+        ETH is NOT included.
+      */
+
+
+      const portfolioValue =
+        usdtBalance * usdtPrice;
+
+
+      document.getElementById(
+        "portfolioValue"
+      ).textContent =
+        formatUsd(
+          portfolioValue
+        );
+
+
+      /* USDT */
+
+      document.getElementById(
+        "usdtBalance"
+      ).textContent =
+        formatNumber(
+          usdtBalance
+        ) + " USDT";
+
+
+      document.getElementById(
+        "usdtUsd"
+      ).textContent =
+        formatUsd(
+          usdtBalance * usdtPrice
+        );
+
+
+      /* ETH */
+
+      document.getElementById(
+        "ethBalance"
+      ).textContent =
+        formatNumber(
+          ethBalance
+        ) + " ETH";
+
+
+      document.getElementById(
+        "ethUsd"
+      ).textContent =
+        formatUsd(
+          ethBalance * ethPrice
+        );
+
+
+      /* ASSETS TAB */
+
+      document.getElementById(
+        "assetsUsdtBalance"
+      ).textContent =
+        formatNumber(
+          usdtBalance
+        ) + " USDT";
+
+
+      document.getElementById(
+        "assetsUsdtUsd"
+      ).textContent =
+        formatUsd(
+          usdtBalance * usdtPrice
+        );
+
+
+      document.getElementById(
+        "assetsEthBalance"
+      ).textContent =
+        formatNumber(
+          ethBalance
+        ) + " ETH";
+
+
+      document.getElementById(
+        "assetsEthUsd"
+      ).textContent =
+        formatUsd(
+          ethBalance * ethPrice
+        );
+
+    }
+
+
+    /* =========================================================
+       MARKET PRICES
+    ========================================================= */
+
+    async function loadMarketPrices() {
+
+      const marketList =
+        document.getElementById(
+          "marketList"
+        );
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/market-prices?symbols=BTC,ETH,USDT,BNB,SOL,USDC"
+          );
+
+
+        if (!response.ok) {
+          throw new Error(
+            "Market request failed"
+          );
+        }
+
+
+        const prices =
+          await response.json();
+
+
+        if (prices?.ETH) {
+
+          ethPrice =
+            Number(
+              prices.ETH
+            );
+
+        }
+
+
+        if (prices?.USDT) {
+
+          usdtPrice =
+            Number(
+              prices.USDT
+            );
+
+        } else {
+
+          usdtPrice = 1;
+
+        }
+
+
+        const symbols = [
+          "BTC",
+          "ETH",
+          "USDT",
+          "BNB",
+          "SOL",
+          "USDC"
+        ];
+
+
+        marketList.innerHTML = "";
+
+
+        symbols.forEach(symbol => {
+
+          if (
+            prices[symbol] === undefined ||
+            prices[symbol] === null
+          ) {
+            return;
+          }
+
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          row.className =
+            "market-row";
+
+
+          row.innerHTML = `
+
+            <div>
+
+              <div class="market-name">
+                ${symbol}
+              </div>
+
+              <div class="market-symbol">
+                ${getCoinName(symbol)}
+              </div>
+
+            </div>
+
+
+            <div class="market-price">
+              ${formatUsd(
+                Number(prices[symbol])
+              )}
+            </div>
+
+          `;
+
+
+          marketList.appendChild(row);
+
+        });
+
+
+        updateBalanceUI();
+
+      } catch (error) {
+
+        console.error(
+          "Market price error:",
+          error
+        );
+
+
+        marketList.innerHTML = `
+
+          <div class="empty">
+            Market prices unavailable.
+          </div>
+
+        `;
+
+
+        usdtPrice = 1;
+
+        updateBalanceUI();
+
+      }
+
+    }
+
+
+    function getCoinName(symbol) {
+
+      const names = {
+
+        BTC: "Bitcoin",
+        ETH: "Ethereum",
+        USDT: "Tether",
+        BNB: "BNB",
+        SOL: "Solana",
+        USDC: "USD Coin"
+
+      };
+
+
+      return (
+        names[symbol] ||
+        symbol
+      );
+
+    }
+
+
+    /* =========================================================
+       SEND
+    ========================================================= */
+
+    function handleSend() {
+
+      const asset =
+        document.getElementById(
+          "sendAsset"
+        ).value;
+
+
+      const address =
+        document.getElementById(
+          "sendAddress"
+        ).value.trim();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "sendAmount"
+          ).value
+        );
+
+
+      if (!address) {
+
+        showToast(
+          "Enter a recipient address"
+        );
+
+        return;
+      }
+
+
+      if (!amount || amount <= 0) {
+
+        showToast(
+          "Enter a valid amount"
+        );
+
+        return;
+      }
+
+
+      showToast(
+        `${asset} send request received`
+      );
+
+    }
+
+
+    /* =========================================================
+       RECEIVE
+    ========================================================= */
+
+    async function copyAddress() {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          USDT_ADDRESS
+        );
+
+
+        showToast(
+          "USDT address copied"
+        );
+
+      } catch {
+
+        showToast(
+          "Unable to copy address"
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       SWAP
+    ========================================================= */
+
+    function handleSwap() {
+
+      const from =
+        document.getElementById(
+          "swapFrom"
+        ).value;
+
+
+      const to =
+        document.getElementById(
+          "swapTo"
+        ).value;
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "swapAmount"
+          ).value
+        );
+
+
+      if (from === to) {
+
+        showToast(
+          "Choose different assets"
+        );
+
+        return;
+      }
+
+
+      if (!amount || amount <= 0) {
+
+        showToast(
+          "Enter a valid amount"
+        );
+
+        return;
+      }
+
+
+      showToast(
+        `${from} to ${to} swap request received`
+      );
+
+    }
+
+
+    /* =========================================================
+       WITHDRAWAL
+    ========================================================= */
+
+    function handleWithdrawal() {
+
+      const address =
+        document.getElementById(
+          "withdrawAddress"
+        ).value.trim();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "withdrawAmount"
+          ).value
+        );
+
+
+      if (!address) {
+
+        showToast(
+          "Enter a withdrawal address"
+        );
+
+        return;
+      }
+
+
+      if (!amount || amount <= 0) {
+
+        showToast(
+          "Enter a valid withdrawal amount"
+        );
+
+        return;
+      }
+
+
+      showToast(
+        "Withdrawal request received"
+      );
+
+
+      document.getElementById(
+        "withdrawAddress"
+      ).value = "";
+
+
+      document.getElementById(
+        "withdrawAmount"
+      ).value = "";
+
+    }
+
+
+    /* =========================================================
+       REFERRAL
+    ========================================================= */
+
+    async function copyReferral() {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          REFERRAL_LINK
+        );
+
+
+        showToast(
+          "Referral link copied"
+        );
+
+      } catch {
+
+        showToast(
+          "Unable to copy referral link"
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       FORMATTERS
+    ========================================================= */
+
+    function formatNumber(value) {
+
+      return Number(
+        value || 0
+      ).toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 8
+        }
+      );
+
+    }
+
+
+    function formatUsd(value) {
+
+      return Number(
+        value || 0
+      ).toLocaleString(
         "en-US",
         {
           style: "currency",
@@ -2317,965 +2091,39 @@
     }
 
 
-    /* ==========================================
-       FORMAT CRYPTO
-    ========================================== */
-
-    function formatCrypto(value) {
-
-      return Number(value || 0).toLocaleString(
-        "en-US",
-        {
-          minimumFractionDigits: 6,
-          maximumFractionDigits: 6
-        }
-      );
-
-    }
-
-
-    /* ==========================================
-       RECHARGE / RECEIVE
-    ========================================== */
-
-    function showRecharge() {
-
-      showTab("receive");
-
-    }
-
-
-    function showWithdrawal() {
-
-      showTab("send");
-
-    }
-
-
-    /* ==========================================
-       RECEIVE ADDRESS
-    ========================================== */
-
-    function updateReceiveAddress() {
-
-      /*
-       * This address is the same address from
-       * your existing dashboard.
-       *
-       * Replace this with your actual wallet
-       * address management/backend later.
-       */
-
-      const address =
-        "0x6633c904fbb69ee62fc7209eca05a9152ed490fa";
-
-      document.getElementById(
-        "receiveAddress"
-      ).textContent =
-        address;
-
-    }
-
-
-    async function copyReceiveAddress() {
-
-      const address =
-        document.getElementById(
-          "receiveAddress"
-        ).textContent;
-
-      try {
-
-        await navigator.clipboard.writeText(
-          address
-        );
-
-        showToast(
-          "Wallet address copied"
-        );
-
-      } catch (error) {
-
-        showToast(
-          "Unable to copy address"
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================
-       SEND
-    ========================================== */
-
-    function prepareSend() {
-
-      const asset =
-        document.getElementById(
-          "sendAsset"
-        ).value;
-
-      const amount =
-        Number(
-          document.getElementById(
-            "sendAmount"
-          ).value
-        );
-
-      const address =
-        document.getElementById(
-          "sendAddress"
-        ).value.trim();
-
-      const network =
-        document.getElementById(
-          "sendNetwork"
-        ).value;
-
-      const message =
-        document.getElementById(
-          "sendMessage"
-        );
-
-
-      if (!address) {
-
-        message.textContent =
-          "Please enter a destination address.";
-
-        return;
-
-      }
-
-
-      if (!amount || amount <= 0) {
-
-        message.textContent =
-          "Please enter a valid amount.";
-
-        return;
-
-      }
-
-
-      if (
-        amount >
-        Number(walletBalances[asset] || 0)
-      ) {
-
-        message.textContent =
-          "Insufficient available balance.";
-
-        return;
-
-      }
-
-
-      message.textContent =
-        `Send review prepared: ${amount} ${asset} on ${network}. Real blockchain submission requires a secure backend transaction service.`;
-
-    }
-
-
-    /* ==========================================
-       SWAP
-    ========================================== */
-
-    function updateSwapBalance() {
-
-      const from =
-        document.getElementById(
-          "swapFrom"
-        ).value;
-
-      document.getElementById(
-        "swapBalanceText"
-      ).textContent =
-        "Balance: " +
-        formatCrypto(
-          walletBalances[from] || 0
-        );
-
-    }
-
-
-    function switchSwapAssets() {
-
-      const from =
-        document.getElementById(
-          "swapFrom"
-        );
-
-      const to =
-        document.getElementById(
-          "swapTo"
-        );
-
-
-      const oldFrom =
-        from.value;
-
-      from.value =
-        to.value;
-
-      to.value =
-        oldFrom;
-
-
-      updateSwapBalance();
-
-      calculateSwapEstimate();
-
-    }
-
-
-    async function calculateSwapEstimate() {
-
-      const amount =
-        Number(
-          document.getElementById(
-            "swapAmount"
-          ).value
-        );
-
-      const from =
-        document.getElementById(
-          "swapFrom"
-        ).value;
-
-      const to =
-        document.getElementById(
-          "swapTo"
-        ).value;
-
-      const output =
-        document.getElementById(
-          "swapReceiveAmount"
-        );
-
-
-      if (
-        !amount ||
-        amount <= 0 ||
-        from === to
-      ) {
-
-        output.value = "";
-
-        return;
-
-      }
-
-
-      const fromPrice =
-        Number(
-          marketPrices[from] || 0
-        );
-
-      const toPrice =
-        Number(
-          marketPrices[to] || 0
-        );
-
-
-      if (
-        !fromPrice ||
-        !toPrice
-      ) {
-
-        output.value = "";
-
-        return;
-
-      }
-
-
-      const estimated =
-        amount *
-        fromPrice /
-        toPrice;
-
-
-      output.value =
-        formatCrypto(estimated);
-
-    }
-
-
-    function prepareSwap() {
-
-      const amount =
-        Number(
-          document.getElementById(
-            "swapAmount"
-          ).value
-        );
-
-      const from =
-        document.getElementById(
-          "swapFrom"
-        ).value;
-
-      const to =
-        document.getElementById(
-          "swapTo"
-        ).value;
-
-      const message =
-        document.getElementById(
-          "swapMessage"
-        );
-
-
-      if (!amount || amount <= 0) {
-
-        message.textContent =
-          "Enter an amount to swap.";
-
-        return;
-
-      }
-
-
-      if (from === to) {
-
-        message.textContent =
-          "Choose two different assets.";
-
-        return;
-
-      }
-
-
-      if (
-        amount >
-        Number(walletBalances[from] || 0)
-      ) {
-
-        message.textContent =
-          "Insufficient available balance.";
-
-        return;
-
-      }
-
-
-      message.textContent =
-        `Swap review prepared: ${amount} ${from} → ${to}. Real swap execution requires a secure backend or supported blockchain swap provider.`;
-
-    }
-
+    /* =========================================================
+       LOGOUT
+    ========================================================= */
 
     document
-      .getElementById("swapAmount")
+      .getElementById("logoutBtn")
       .addEventListener(
-        "input",
-        calculateSwapEstimate
-      );
+        "click",
+        async () => {
 
-
-    document
-      .getElementById("swapFrom")
-      .addEventListener(
-        "change",
-        () => {
-
-          updateSwapBalance();
-          calculateSwapEstimate();
-
-        }
-      );
-
-
-    document
-      .getElementById("swapTo")
-      .addEventListener(
-        "change",
-        calculateSwapEstimate
-      );
-
-
-    /* ==========================================
-       REFERRAL COPY
-    ========================================== */
-
-    async function copyReferralLink() {
-
-      const referralInput =
-        document.getElementById(
-          "referralLink"
-        );
-
-      const referralLink =
-        referralInput.value;
-
-
-      try {
-
-        await navigator.clipboard.writeText(
-          referralLink
-        );
-
-        showToast(
-          "Referral link copied"
-        );
-
-      } catch (error) {
-
-        referralInput.select();
-
-        document.execCommand(
-          "copy"
-        );
-
-        showToast(
-          "Referral link copied"
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================
-       LOAD USER
-    ========================================== */
-
-    async function loadUser() {
-
-      try {
-
-        const {
-          data: {
-            user
-          }
-        } =
-          await supabaseClient
-            .auth
-            .getUser();
-
-
-        if (!user) {
+          await supabaseClient.auth.signOut();
 
           window.location.href =
             "/oex-crypto/";
 
-          return;
-
         }
+      );
 
 
-        document.getElementById(
-          "userEmail"
-        ).textContent =
-          user.email || "";
-
-
-        document.getElementById(
-          "userName"
-        ).textContent =
-          user.user_metadata?.display_name ||
-          "OEX User";
-
-
-        /* ===============================
-           LOAD BALANCES
-        =============================== */
-
-        const {
-          data: balances,
-          error
-        } =
-          await supabaseClient
-            .from("balances")
-            .select(`
-              amount,
-              coin_id,
-              coins (
-                symbol
-              )
-            `)
-            .eq(
-              "user_id",
-              user.id
-            );
-
-
-        if (error) {
-
-          console.error(
-            "Balance error:",
-            error
-          );
-
-          return;
-
-        }
-
-
-        walletBalances.USDT = 0;
-        walletBalances.ETH = 0;
-
-
-        balances.forEach(
-          balance => {
-
-            const symbol =
-              balance.coins?.symbol;
-
-
-            if (symbol === "USDT") {
-
-              walletBalances.USDT =
-                Number(balance.amount);
-
-            }
-
-
-            if (symbol === "ETH") {
-
-              walletBalances.ETH =
-                Number(balance.amount);
-
-            }
-
-          }
-        );
-
-
-        updateBalanceUI();
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "User loading error:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================
-       UPDATE BALANCE UI
-    ========================================== */
-
-    function updateBalanceUI() {
-
-      const usdt =
-        Number(
-          walletBalances.USDT || 0
-        );
-
-      const eth =
-        Number(
-          walletBalances.ETH || 0
-        );
-
-
-      const ethPrice =
-        Number(
-          marketPrices.ETH || 0
-        );
-
-
-      const usdtValue =
-        usdt *
-        Number(
-          marketPrices.USDT || 1
-        );
-
-
-      const ethValue =
-        eth *
-        ethPrice;
-
-
-      const total =
-        usdtValue +
-        ethValue;
-
-
-      document.getElementById(
-        "usdtBalance"
-      ).textContent =
-        formatCrypto(usdt) +
-        " USDT";
-
-
-      document.getElementById(
-        "ethBalance"
-      ).textContent =
-        formatCrypto(eth) +
-        " ETH";
-
-
-      document.getElementById(
-        "usdtUsd"
-      ).textContent =
-        formatUSD(usdtValue);
-
-
-      document.getElementById(
-        "ethUsd"
-      ).textContent =
-        formatUSD(ethValue);
-
-
-      document.getElementById(
-        "portfolioValue"
-      ).textContent =
-        formatUSD(total);
-
-
-      document.getElementById(
-        "assetsPortfolioValue"
-      ).textContent =
-        formatUSD(total);
-
-
-      document.getElementById(
-        "assetUsdtAmount"
-      ).textContent =
-        formatCrypto(usdt) +
-        " USDT";
-
-
-      document.getElementById(
-        "assetUsdtValue"
-      ).textContent =
-        formatUSD(usdtValue);
-
-
-      document.getElementById(
-        "assetEthAmount"
-      ).textContent =
-        formatCrypto(eth) +
-        " ETH";
-
-
-      document.getElementById(
-        "assetEthValue"
-      ).textContent =
-        formatUSD(ethValue);
-
-
-      updateSwapBalance();
-
-    }
-
-
-    /* ==========================================
-       LOGOUT
-    ========================================== */
-
-    async function logout() {
-
-      try {
-
-        await supabaseClient
-          .auth
-          .signOut();
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Logout error:",
-          error
-        );
-
-      }
-
-
-      window.location.href =
-        "/oex-crypto/";
-
-    }
-
-
-    /* ==========================================
-       MARKET COINS
-    ========================================== */
-
-    const dashboardCoins = [
-
-      {
-        id: "bitcoin",
-        name: "Bitcoin",
-        symbol: "BTC"
-      },
-
-      {
-        id: "ethereum",
-        name: "Ethereum",
-        symbol: "ETH"
-      },
-
-      {
-        id: "tether",
-        name: "Tether",
-        symbol: "USDT"
-      },
-
-      {
-        id: "binancecoin",
-        name: "BNB",
-        symbol: "BNB"
-      },
-
-      {
-        id: "solana",
-        name: "Solana",
-        symbol: "SOL"
-      },
-
-      {
-        id: "usd-coin",
-        name: "USD Coin",
-        symbol: "USDC"
-      }
-
-    ];
-
-
-    /* ==========================================
-       MARKET PRICES
-    ========================================== */
-
-    async function loadDashboardMarketPrices() {
-
-      const grid =
-        document.getElementById(
-          "dashboardMarketGrid"
-        );
-
-
-      if (!grid) {
-        return;
-      }
-
-
-      try {
-
-        const ids =
-          dashboardCoins
-            .map(
-              coin => coin.id
-            )
-            .join(",");
-
-
-        const response =
-          await fetch(
-
-            "/api/market-prices" +
-
-            "?vs_currency=usd" +
-
-            "&ids=" +
-            encodeURIComponent(ids) +
-
-            "&order=market_cap_desc" +
-
-            "&per_page=20" +
-
-            "&page=1" +
-
-            "&sparkline=false" +
-
-            "&price_change_percentage=24h"
-
-          );
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "Market price API unavailable"
-          );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        grid.innerHTML = "";
-
-
-        if (
-          !Array.isArray(data) ||
-          data.length === 0
-        ) {
-
-          grid.innerHTML =
-            "<p class='muted'>Market prices unavailable.</p>";
-
-          return;
-
-        }
-
-
-        data.forEach(
-          coin => {
-
-            const card =
-              document.createElement(
-                "div"
-              );
-
-
-            card.className =
-              "market-card";
-
-
-            const change =
-              Number(
-                coin.price_change_percentage_24h || 0
-              );
-
-
-            if (
-              coin.id === "ethereum"
-            ) {
-
-              marketPrices.ETH =
-                Number(
-                  coin.current_price || 0
-                );
-
-            }
-
-
-            if (
-              coin.id === "tether"
-            ) {
-
-              marketPrices.USDT =
-                Number(
-                  coin.current_price || 1
-                );
-
-            }
-
-
-            const changeClass =
-              change >= 0
-                ? "positive"
-                : "negative";
-
-
-            card.innerHTML = `
-
-              <div class="market-header">
-
-                <img
-                  class="market-logo"
-                  src="${coin.image}"
-                  alt="${coin.name}"
-                >
-
-                <div>
-
-                  <div class="market-name">
-                    ${coin.name}
-                  </div>
-
-                  <div class="market-symbol">
-                    ${coin.symbol.toUpperCase()}
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <div class="market-price">
-                ${formatUSD(
-                  coin.current_price
-                )}
-              </div>
-
-
-              <div
-                class="market-change ${changeClass}">
-
-                24h:
-                ${change >= 0 ? "+" : ""}
-                ${change.toFixed(2)}%
-
-              </div>
-
-            `;
-
-
-            grid.appendChild(
-              card
-            );
-
-          }
-        );
-
-
-        updateBalanceUI();
-
-      }
-
-      catch (error) {
-
-        console.error(
-          "Market prices error:",
-          error
-        );
-
-
-        grid.innerHTML = `
-
-          <div class="empty-state">
-
-            <div class="empty-icon">
-              ⚠
-            </div>
-
-            <p>
-              Market prices unavailable.
-            </p>
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    /* ==========================================
+    /* =========================================================
        START
-    ========================================== */
+    ========================================================= */
 
     loadUser();
 
-    window.addEventListener(
-      "load",
-      loadDashboardMarketPrices
-    );
-
+    loadMarketPrices();
 
     setInterval(
-      loadDashboardMarketPrices,
+      loadMarketPrices,
       60000
     );
 
   </script>
 
 </body>
-
 </html>
