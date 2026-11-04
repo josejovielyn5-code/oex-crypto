@@ -1,389 +1,747 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>OEX Dashboard</title>
 
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b1020;
-    color: white;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  #dashboardMarketGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin-top: 15px;
-  }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: white;
+    }
 
-  .market-card {
-    background: #111827;
-    border: 1px solid #263244;
-    border-radius: 14px;
-    padding: 18px;
-    min-height: 150px;
-  }
+    header {
+      padding: 20px;
+      background: #11182d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .market-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4da3ff;
+    }
 
-  .market-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-  }
+    button {
+      background: #4da3ff;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-  .market-name {
-    font-weight: 700;
-    font-size: 17px;
-  }
+    button:hover {
+      opacity: 0.9;
+    }
 
-  .market-symbol {
-    color: #9ca3af;
-    font-size: 13px;
-  }
+    main {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+    }
 
-  .market-price {
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 18px;
-  }
+    .card {
+      background: #11182d;
+      padding: 25px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
 
-  .market-change {
-    margin-top: 6px;
-    font-size: 14px;
-  }
+    .balance {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
 
-  header {
-    padding: 20px;
-    background: #11182d;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    .muted {
+      color: #9aa4bd;
+    }
 
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #4da3ff;
-  }
+    input {
+      background: #0b1020;
+      color: white;
+      border: 1px solid #263244;
+      border-radius: 8px;
+      padding: 12px;
+      width: 100%;
+      margin: 8px 0;
+    }
 
-  button {
-    background: #4da3ff;
-    border: none;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
+    .action-button {
+      margin-right: 8px;
+      margin-top: 10px;
+    }
 
-  main {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 20px;
-  }
+    .address-box {
+      background: #0b1020;
+      padding: 15px;
+      border-radius: 10px;
+      word-break: break-all;
+      margin: 15px 0;
+      border: 1px solid #263244;
+    }
 
-  .card {
-    background: #11182d;
-    padding: 25px;
-    border-radius: 14px;
-    margin-bottom: 20px;
-  }
+    #dashboardMarketGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 15px;
+    }
 
-  .balance {
-    font-size: 36px;
-    font-weight: bold;
-    margin-top: 10px;
-  }
+    .market-card {
+      background: #111827;
+      border: 1px solid #263244;
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 150px;
+    }
 
-  .muted {
-    color: #9aa4bd;
-  }
+    .market-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-  a {
-    color: #4da3ff;
-    text-decoration: none;
-  }
-</style>
+    .market-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+    }
+
+    .market-name {
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .market-symbol {
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    .market-price {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 18px;
+    }
+
+    .market-change {
+      margin-top: 6px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
 <body>
 
-<header>
-  <div class="logo">OEX Crypto</div>
-  <button onclick="logout()">Log Out</button>
-</header>
+  <header>
+    <div class="logo">OEX Crypto</div>
 
-<main>
+    <button onclick="logout()">
+      Log Out
+    </button>
+  </header>
 
-  <div class="card">
-    <div class="muted">Welcome</div>
-    <h1 id="userName">OEX User</h1>
-    <div class="muted" id="userEmail"></div>
-  </div>
 
-  <div class="card">
-  <div class="muted">USDT Balance</div>
-  <div class="balance" id="usdtBalance">0.00 USDT</div>
-<div class="balance" id="ethBalance">0.00 ETH</div>
-  </div>
+  <main>
 
-  <div class="card">
-  <h2>USDT</h2>
+    <!-- USER -->
+    <div class="card">
 
-  <button onclick="showRecharge()">Recharge</button>
-  <button onclick="showWithdrawal()">Withdrawal</button>
-
-  <div id="actionArea" style="margin-top:20px;"></div>
-</div>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
-
-<script>
-  const SUPABASE_URL = "https://fnyxxyohuywtatbjagyc.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
-
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
-function showRecharge() {
-  document.getElementById("actionArea").innerHTML = `
-    <h3>Recharge USDT</h3>
-
-    <p class="muted">
-      Send USDT to the address below.
-    </p>
-
-    <div style="
-      background:#0b1020;
-      padding:15px;
-      border-radius:10px;
-      word-break:break-all;
-      margin:15px 0;
-    ">
-      0x6633c904fbb69ee62fc7209eca05a9152ed490fa
-    </div>
-
-    <p class="muted">
-      Make sure you send USDT on the correct network.
-    </p>
-  `;
-}
-  async function loadUser() {
-    const {
-      data: { user }
-    } = await supabaseClient.auth.getUser();
-
-    if (!user) {
-      window.location.href = "/oex-crypto/";
-      return;
-    }
-
-    document.getElementById("userEmail").textContent =
-      user.email || "";
-const { data: balances, error: balanceError } =
-  await supabaseClient
-    .from("balances")
-    .select(`
-      amount,
-      coin_id,
-      coins (
-        symbol
-      )
-    `)
-    .eq("user_id", user.id);
-
-if (balanceError) {
-  console.error(balanceError);
-  return;
-}
-
-let usdtBalance = 0;
-let ethBalance = 0;
-
-balances.forEach(balance => {
-  const symbol = balance.coins?.symbol;
-
-  if (symbol === "USDT") {
-    usdtBalance = Number(balance.amount);
-  }
-
-  if (symbol === "ETH") {
-    ethBalance = Number(balance.amount);
-  }
-});
-
-const usdtElement = document.getElementById("usdtBalance");
-const ethElement = document.getElementById("ethBalance");
-
-if (usdtElement) {
-  usdtElement.textContent = usdtBalance;
-}
-
-if (ethElement) {
-  ethElement.textContent = ethBalance;
-}
-    document.getElementById("userName").textContent =
-      user.user_metadata?.display_name || "OEX User";
-  }
-
-  async function logout() {
-  await supabaseClient.auth.signOut();
-  window.location.href = "/oex-crypto/";
-}
-
-function showRecharge() {
-  document.getElementById("actionArea").innerHTML = `
-    <h3>Recharge USDT</h3>
-
-    <p class="muted">
-      Send USDT to the address below.
-    </p>
-
-    <div style="
-      background:#0b1020;
-      padding:15px;
-      border-radius:10px;
-      word-break:break-all;
-      margin:15px 0;
-    ">
-            0x6633c904fbb69ee62fc7209eca05a9152ed490fa
-    </div>
-
-    <p class="muted">
-      Make sure you send USDT on the correct network.
-    </p>
-    `;
-}
-
-function showWithdrawal() {
-  document.getElementById("actionArea").innerHTML = `
-    <h3>Withdrawal</h3>
-
-    <p class="muted">
-      Enter destination address and amount.
-    </p>
-
-    <input
-      id="withdrawAddress"
-      type="text"
-      placeholder="Destination address"
-      style="width:100%; padding:12px; margin:10px 0;"
-    >
-
-    <input
-      id="withdrawAmount"
-      type="number"
-      step="0.000001"
-      min="0"
-      placeholder="Amount USDT"
-      style="width:100%; padding:12px; margin:10px 0;"
-    >
-
-    <p class="muted">
-      ETH Network Fee: <strong></strong>
-    </p>
-
-    <button onclick="submitWithdrawal()">Submit Withdrawal</button>
-  `;
-}
-
-loadUser();
-
-const dashboardCoins = [
-  { id: "bitcoin", name: "Bitcoin", symbol: "BTC" },
-  { id: "ethereum", name: "Ethereum", symbol: "ETH" },
-  { id: "tether", name: "Tether", symbol: "USDT" },
-  { id: "binancecoin", name: "BNB", symbol: "BNB" },
-  { id: "solana", name: "Solana", symbol: "SOL" },
-  { id: "usd-coin", name: "USD Coin", symbol: "USDC" }
-];
-
-async function loadDashboardMarketPrices() {
-    const grid = document.getElementById("dashboardMarketGrid");
-
-  try {
-    const ids = dashboardCoins.map(c => c.id).join(",");
-
-    const response = await fetch(
-      "/api/market-prices" +
-      "?vs_currency=usd" +
-      "&ids=" + ids +
-      "&order=market_cap_desc" +
-      "&per_page=20" +
-"&page=1" +
-"&sparkline=false" +
-      "&price_change_percentage=24h"
-    );
-
-    if (!response.ok) {
-      throw new Error("Price API unavailable");
-    }
-
-    const data = await response.json();
-
-    grid.innerHTML = "";
-
-    data.forEach(coin => {
-  const card = document.createElement("div");
-
-  card.className = "market-card";
-
-  card.innerHTML = `
-    <div class="market-header">
-      <img
-        class="market-logo"
-        src="${coin.image}"
-        alt="${coin.name}"
-      >
-
-      <div>
-        <div class="market-name">${coin.name}</div>
-        <div class="market-symbol">${coin.symbol.toUpperCase()}</div>
+      <div class="muted">
+        Welcome
       </div>
+
+      <h1 id="userName">
+        OEX User
+      </h1>
+
+      <div
+        class="muted"
+        id="userEmail">
+      </div>
+
     </div>
 
-    <div class="market-price">
-      $${Number(coin.current_price).toLocaleString()}
+
+    <!-- BALANCES -->
+    <div class="card">
+
+      <div class="muted">
+        USDT Balance
+      </div>
+
+      <div
+        class="balance"
+        id="usdtBalance">
+        0.00 USDT
+      </div>
+
+
+      <div
+        class="muted"
+        style="margin-top:20px;">
+        ETH Balance
+      </div>
+
+      <div
+        class="balance"
+        id="ethBalance">
+        0.00 ETH
+      </div>
+
     </div>
 
-    <div class="market-change">
-      24h: ${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%
-    </div>
-  `;
 
-  grid.appendChild(card);
-});
-        <strong>${coin.name}</strong>
-        <div>${coin.symbol.toUpperCase()}</div>
-        <div>$${Number(coin.current_price).toLocaleString()}</div>
-        <div>24h: ${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%</div>
+    <!-- USDT ACTIONS -->
+    <div class="card">
+
+      <h2>
+        USDT
+      </h2>
+
+      <button
+        class="action-button"
+        onclick="showRecharge()">
+        Recharge
+      </button>
+
+      <button
+        class="action-button"
+        onclick="showWithdrawal()">
+        Withdrawal
+      </button>
+
+
+      <div
+        id="actionArea"
+        style="margin-top:20px;">
+      </div>
+
+    </div>
+
+
+    <!-- MARKET PRICES -->
+    <div class="card">
+
+      <h2>
+        Market Prices
+      </h2>
+
+      <div id="dashboardMarketGrid">
+        Loading market prices...
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+
+
+  <script>
+
+    /* =========================================
+       SUPABASE
+    ========================================= */
+
+    const SUPABASE_URL =
+      "https://fnyxxyohuywtatbjagyc.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
+
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /* =========================================
+       RECHARGE
+    ========================================= */
+
+    function showRecharge() {
+
+      const actionArea =
+        document.getElementById("actionArea");
+
+      actionArea.innerHTML = `
+
+        <h3>
+          Recharge USDT
+        </h3>
+
+        <p class="muted">
+          Send USDT to the address below.
+        </p>
+
+        <div class="address-box">
+
+          0x6633c904fbb69ee62fc7209eca05a9152ed490fa
+
+        </div>
+
+        <p class="muted">
+          Make sure you send USDT on the correct network.
+        </p>
+
+        <p class="muted">
+          After sending your USDT, the balance will be
+          updated after the transaction is confirmed.
+        </p>
+
       `;
+    }
 
-      grid.appendChild(card);
-    });
+
+    /* =========================================
+       WITHDRAWAL
+    ========================================= */
+
+    function showWithdrawal() {
+
+      const actionArea =
+        document.getElementById("actionArea");
+
+      actionArea.innerHTML = `
+
+        <h3>
+          Withdrawal
+        </h3>
+
+        <p class="muted">
+          Enter destination address and amount.
+        </p>
+
+        <input
+          id="withdrawAddress"
+          type="text"
+          placeholder="Destination address"
+        >
+
+        <input
+          id="withdrawAmount"
+          type="number"
+          step="0.000001"
+          min="0"
+          placeholder="Amount USDT"
+        >
+
+        <p class="muted">
+          ETH Network Fee:
+          <strong>
+            Calculated when withdrawal is processed
+          </strong>
+        </p>
+
+        <button
+          onclick="submitWithdrawal()">
+          Submit Withdrawal
+        </button>
+
+      `;
+    }
+
+
+    /* =========================================
+       WITHDRAWAL SUBMIT
+    ========================================= */
+
+    function submitWithdrawal() {
+
+      const address =
+        document.getElementById(
+          "withdrawAddress"
+        ).value.trim();
+
+      const amount =
+        document.getElementById(
+          "withdrawAmount"
+        ).value;
+
+
+      if (!address) {
+
+        alert(
+          "Please enter a destination address."
+        );
+
+        return;
+      }
+
+
+      if (!amount || Number(amount) <= 0) {
+
+        alert(
+          "Please enter a valid withdrawal amount."
+        );
+
+        return;
+      }
+
+
+      alert(
+        "Withdrawal request received."
+      );
+
+      console.log(
+        "Withdrawal:",
+        {
+          address: address,
+          amount: amount
+        }
+      );
+    }
+
+
+    /* =========================================
+       LOAD USER
+    ========================================= */
+
+    async function loadUser() {
+
+      const {
+        data: {
+          user
+        }
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (!user) {
+
+        window.location.href =
+          "/oex-crypto/";
+
+        return;
+      }
+
+
+      document.getElementById(
+        "userEmail"
+      ).textContent =
+        user.email || "";
+
+
+      document.getElementById(
+        "userName"
+      ).textContent =
+        user.user_metadata?.display_name ||
+        "OEX User";
+
+
+      /* LOAD BALANCES */
+
+      const {
+        data: balances,
+        error: balanceError
+      } =
+        await supabaseClient
+          .from("balances")
+          .select(`
+            amount,
+            coin_id,
+            coins (
+              symbol
+            )
+          `)
+          .eq(
+            "user_id",
+            user.id
+          );
+
+
+      if (balanceError) {
+
+        console.error(
+          "Balance error:",
+          balanceError
+        );
+
+        return;
+      }
+
+
+      let usdtBalance = 0;
+      let ethBalance = 0;
+
+
+      balances.forEach(
+        balance => {
+
+          const symbol =
+            balance.coins?.symbol;
+
+
+          if (symbol === "USDT") {
+
+            usdtBalance =
+              Number(balance.amount);
+
+          }
+
+
+          if (symbol === "ETH") {
+
+            ethBalance =
+              Number(balance.amount);
+
+          }
+
+        }
+      );
+
+
+      document.getElementById(
+        "usdtBalance"
+      ).textContent =
+        usdtBalance.toFixed(6) +
+        " USDT";
+
+
+      document.getElementById(
+        "ethBalance"
+      ).textContent =
+        ethBalance.toFixed(6) +
+        " ETH";
+
+    }
+
+
+    /* =========================================
+       LOGOUT
+    ========================================= */
+
+    async function logout() {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        "/oex-crypto/";
+    }
+
+
+    /* =========================================
+       MARKET COINS
+    ========================================= */
+
+    const dashboardCoins = [
+
+      {
+        id: "bitcoin",
+        name: "Bitcoin",
+        symbol: "BTC"
+      },
+
+      {
+        id: "ethereum",
+        name: "Ethereum",
+        symbol: "ETH"
+      },
+
+      {
+        id: "tether",
+        name: "Tether",
+        symbol: "USDT"
+      },
+
+      {
+        id: "binancecoin",
+        name: "BNB",
+        symbol: "BNB"
+      },
+
+      {
+        id: "solana",
+        name: "Solana",
+        symbol: "SOL"
+      },
+
+      {
+        id: "usd-coin",
+        name: "USD Coin",
+        symbol: "USDC"
+      }
+
+    ];
+
+
+    /* =========================================
+       MARKET PRICES
+    ========================================= */
+
+    async function loadDashboardMarketPrices() {
+
+      const grid =
+        document.getElementById(
+          "dashboardMarketGrid"
+        );
+
+
+      if (!grid) {
+        return;
+      }
+
+
+      try {
+
+        const ids =
+          dashboardCoins
+            .map(
+              coin => coin.id
+            )
+            .join(",");
+
+
+        const response =
+          await fetch(
+            "/api/market-prices" +
+            "?vs_currency=usd" +
+            "&ids=" + ids +
+            "&order=market_cap_desc" +
+            "&per_page=20" +
+            "&page=1" +
+            "&sparkline=false" +
+            "&price_change_percentage=24h"
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Price API unavailable"
+          );
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        grid.innerHTML = "";
+
+
+        data.forEach(
+          coin => {
+
+            const card =
+              document.createElement(
+                "div"
+              );
+
+
+            card.className =
+              "market-card";
+
+
+            card.innerHTML = `
+
+              <div class="market-header">
+
+                <img
+                  class="market-logo"
+                  src="${coin.image}"
+                  alt="${coin.name}"
+                >
+
+                <div>
+
+                  <div class="market-name">
+                    ${coin.name}
+                  </div>
+
+                  <div class="market-symbol">
+                    ${coin.symbol.toUpperCase()}
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="market-price">
+
+                $${Number(
+                  coin.current_price
+                ).toLocaleString()}
+
+              </div>
+
+
+              <div class="market-change">
+
+                24h:
+                ${Number(
+                  coin.price_change_percentage_24h || 0
+                ).toFixed(2)}%
+
+              </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+          }
+        );
+
 
       } catch (error) {
-    console.error(error);
-    grid.innerHTML = "<p>Market prices unavailable.</p>";
-  }
-}
 
-window.addEventListener("load", loadDashboardMarketPrices);
-setInterval(loadDashboardMarketPrices, 60000);
-</script>
-<section class="card">
-  <h2>Market Prices</h2>
-  <div id="dashboardMarketGrid">
-  Loading market prices...
-</div>
-</section>
+        console.error(
+          "Market price error:",
+          error
+        );
+
+
+        grid.innerHTML =
+          "<p>Market prices unavailable.</p>";
+
+      }
+
+    }
+
+
+    /* =========================================
+       START
+    ========================================= */
+
+    loadUser();
+
+
+    window.addEventListener(
+      "load",
+      loadDashboardMarketPrices
+    );
+
+
+    setInterval(
+      loadDashboardMarketPrices,
+      60000
+    );
+
+  </script>
+
 </body>
+
 </html>
+```
