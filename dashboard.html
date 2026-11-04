@@ -318,8 +318,8 @@ async function loadDashboardMarketPrices() {
       "&ids=" + ids +
       "&order=market_cap_desc" +
       "&per_page=20" +
-      "&page=1" +
-      "&sparkline=false" +
+"&page=1" +
+"&sparkline=true" +
       "&price_change_percentage=24h"
     );
 
@@ -332,11 +332,35 @@ async function loadDashboardMarketPrices() {
     grid.innerHTML = "";
 
     data.forEach(coin => {
-      const card = document.createElement("div");
+  const card = document.createElement("div");
 
-      card.className = "coin";
+  card.className = "market-card";
 
-      card.innerHTML = `
+  card.innerHTML = `
+    <div class="market-header">
+      <img
+        class="market-logo"
+        src="${coin.image}"
+        alt="${coin.name}"
+      >
+
+      <div>
+        <div class="market-name">${coin.name}</div>
+        <div class="market-symbol">${coin.symbol.toUpperCase()}</div>
+      </div>
+    </div>
+
+    <div class="market-price">
+      $${Number(coin.current_price).toLocaleString()}
+    </div>
+
+    <div class="market-change">
+      24h: ${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%
+    </div>
+  `;
+
+  grid.appendChild(card);
+});
         <strong>${coin.name}</strong>
         <div>${coin.symbol.toUpperCase()}</div>
         <div>$${Number(coin.current_price).toLocaleString()}</div>
