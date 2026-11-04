@@ -179,10 +179,10 @@
 const SUPABASE_URL = "https://fnyxxyohuywtatbjagyc.supabase.co";
 
 /*
-  Keep your existing Supabase publishable key
-  here from your current dashboard.html.
+  KEEP YOUR EXISTING SUPABASE PUBLISHABLE KEY HERE.
+  Do not paste the key into chat.
 */
-const SUPABASE_KEY = "sb_publishable_A3iHoZiiPZhPyTUDUDCfZQ_G0u6xvxj";
+const SUPABASE_KEY = "YOUR_EXISTING_PUBLISHABLE_KEY";
 
 const supabaseClient = supabase.createClient(
   SUPABASE_URL,
@@ -194,10 +194,10 @@ async function adminLogin() {
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-
   const message = document.getElementById("loginMessage");
 
   message.textContent = "Logging in...";
+  message.className = "";
 
   const { data, error } =
     await supabaseClient.auth.signInWithPassword({
@@ -224,7 +224,9 @@ async function adminLogin() {
 
     await supabaseClient.auth.signOut();
 
-    message.textContent = "Access denied. Admin account required.";
+    message.textContent =
+      "Access denied. Admin account required.";
+
     message.className = "error";
 
     return;
@@ -232,35 +234,51 @@ async function adminLogin() {
 
   document.getElementById("loginCard").classList.add("hidden");
   document.getElementById("adminPanel").classList.remove("hidden");
-  loadUsers();
+
+  await loadUsers();
 }
 
+
 async function loadUsers() {
+
   const select = document.getElementById("userSelect");
 
-  const { data, error } = await supabaseClient
-    .from("profiles")
-    .select("id, display_name, email")
-    .order("display_name");
+  if (!select) {
+    console.error("userSelect not found");
+    return;
+  }
+
+  const { data, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("id, display_name, email")
+      .order("display_name");
 
   if (error) {
     console.error(error);
     return;
   }
 
-  select.innerHTML = '<option value="">Select user</option>';
+  select.innerHTML =
+    '<option value="">Select user</option>';
 
   data.forEach(user => {
+
     const option = document.createElement("option");
+
     option.value = user.id;
+
     option.textContent =
       (user.display_name || "OEX User") +
       " — " +
       (user.email || "No email");
 
     select.appendChild(option);
+
   });
 }
+
+
 async function logout() {
 
   await supabaseClient.auth.signOut();
@@ -268,74 +286,69 @@ async function logout() {
   document.getElementById("adminPanel").classList.add("hidden");
   document.getElementById("loginCard").classList.remove("hidden");
 }
-async function createUserAccount() {
-  const name = document.getElementById("newUserName").value.trim();
-  const email = document.getElementById("newUserEmail").value.trim();
-  const password = document.getElementById("newUserPassword").value;
-  const message = document.getElementById("createUserMessage");
 
-  if (!name || !email || !password) {
-    message.textContent = "Please fill in all fields.";
-    return;
-  }
 
-  if (password.length < 6) {
-    message.textContent = "Password must be at least 6 characters.";
-    return;
-  }
-
-  message.textContent = "Creating user...";
-
-  // Temporary placeholder.
-  // The secure account-creation connection will be added next.
-  message.textContent = "User form is ready.";
-}
-async function saveEthFee() {
-  const fee = Number(document.getElementById("ethFee").value);
-  const message = document.getElementById("ethFeeMessage");
-
-  if (isNaN(fee) || fee < 0) {
-    message.textContent = "Enter a valid ETH fee.";
-    return;
-  }
-
-  message.textContent = "Saving ETH fee...";
-
-  // Fee storage will be connected next.
-  message.textContent = "ETH fee entered: " + fee + " ETH";
-}
 async function addBalance() {
-  const userId = document.getElementById("userSelect").value;
-  const coinSymbol = document.getElementById("coinType").value;
-  const amount = Number(document.getElementById("amount").value);
-  const message = document.getElementById("balanceMessage");
+
+  const userId =
+    document.getElementById("userSelect").value;
+
+  const coinSymbol =
+    document.getElementById("coinType").value;
+
+  const amount =
+    Number(document.getElementById("amount").value);
+
+  const message =
+    document.getElementById("balanceMessage");
+
 
   if (!userId) {
-    message.textContent = "Please select a user.";
+
+    message.textContent =
+      "Please select a user.";
+
     message.className = "error";
+
     return;
   }
+
 
   if (!amount || amount <= 0) {
-    message.textContent = "Enter a valid amount.";
+
+    message.textContent =
+      "Enter a valid amount.";
+
     message.className = "error";
+
     return;
   }
 
-  message.textContent = "Adding balance...";
+
+  message.textContent =
+    "Adding balance...";
+
   message.className = "";
 
-  const { data: coin, error: coinError } = await supabaseClient
-    .from("coins")
-    .select("id")
-    .eq("symbol", coinSymbol)
-    .single();
+
+  const { data: coin, error: coinError } =
+    await supabaseClient
+      .from("coins")
+      .select("id")
+      .eq("symbol", coinSymbol)
+      .single();
+
 
   if (coinError || !coin) {
-    message.textContent = "Coin not found.";
+
+    message.textContent =
+      "Coin not found.";
+
     message.className = "error";
+
     return;
   }
+
 
   const { data: existingBalance, error: balanceError } =
     await supabaseClient
@@ -345,44 +358,67 @@ async function addBalance() {
       .eq("coin_id", coin.id)
       .maybeSingle();
 
+
   if (balanceError) {
-    message.textContent = balanceError.message;
+
+    message.textContent =
+      balanceError.message;
+
     message.className = "error";
+
     return;
   }
 
+
   if (existingBalance) {
+
     const newAmount =
       Number(existingBalance.amount) + amount;
 
-    const { error } = await supabaseClient
-      .from("balances")
-      .update({
-        amount: newAmount,
-        updated_at: new Date().toISOString()
-      })
-      .eq("id", existingBalance.id);
+
+    const { error } =
+      await supabaseClient
+        .from("balances")
+        .update({
+          amount: newAmount,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", existingBalance.id);
+
 
     if (error) {
-      message.textContent = error.message;
+
+      message.textContent =
+        error.message;
+
       message.className = "error";
+
       return;
     }
+
   } else {
-    const { error } = await supabaseClient
-      .from("balances")
-      .insert({
-        user_id: userId,
-        coin_id: coin.id,
-        amount: amount
-      });
+
+    const { error } =
+      await supabaseClient
+        .from("balances")
+        .insert({
+          user_id: userId,
+          coin_id: coin.id,
+          amount: amount
+        });
+
 
     if (error) {
-      message.textContent = error.message;
+
+      message.textContent =
+        error.message;
+
       message.className = "error";
+
       return;
     }
   }
+
 
   message.textContent =
     "Balance added successfully: " +
@@ -393,26 +429,6 @@ async function addBalance() {
   message.className = "success";
 
   document.getElementById("amount").value = "";
-}
-
-  message.textContent = "Processing...";
-
-  const { data: userData, error: userError } =
-    await supabaseClient
-      .from("profiles")
-      .select("id")
-      .eq("id", "00000000-0000-0000-0000-000000000000")
-      .limit(1);
-
-  /*
-    User lookup and balance updates will be connected
-    after we confirm the admin login works.
-  */
-
-  message.textContent =
-    "Admin login is working. Balance management will be connected next.";
-
-  message.className = "success";
 }
 
 </script>
