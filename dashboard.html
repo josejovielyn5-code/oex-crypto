@@ -251,6 +251,64 @@ function showWithdrawal() {
 
 loadUser();
 
+const dashboardCoins = [
+  { id: "bitcoin", name: "Bitcoin", symbol: "BTC" },
+  { id: "ethereum", name: "Ethereum", symbol: "ETH" },
+  { id: "tether", name: "Tether", symbol: "USDT" },
+  { id: "binancecoin", name: "BNB", symbol: "BNB" },
+  { id: "solana", name: "Solana", symbol: "SOL" },
+  { id: "usd-coin", name: "USD Coin", symbol: "USDC" }
+];
+
+async function loadDashboardMarketPrices() {
+    const grid = document.getElementById("dashboardMarketGrid");
+
+  try {
+    const ids = dashboardCoins.map(c => c.id).join(",");
+
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/coins/markets" +
+      "?vs_currency=usd" +
+      "&ids=" + ids +
+      "&order=market_cap_desc" +
+      "&per_page=20" +
+      "&page=1" +
+      "&sparkline=false" +
+      "&price_change_percentage=24h"
+    );
+
+    if (!response.ok) {
+      throw new Error("Price API unavailable");
+    }
+
+    const data = await response.json();
+
+    grid.innerHTML = "";
+
+    data.forEach(coin => {
+      const card = document.createElement("div");
+
+      card.className = "coin";
+
+      card.innerHTML = `
+        <strong>${coin.name}</strong>
+        <div>${coin.symbol.toUpperCase()}</div>
+        <div>$${Number(coin.current_price).toLocaleString()}</div>
+        <div>24h: ${Number(coin.price_change_percentage_24h || 0).toFixed(2)}%</div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+      } catch (error) {
+    console.error(error);
+    grid.innerHTML = "<p>Market prices unavailable.</p>";
+  }
+}
+
+loadDashboardMarketPrices();
+
+setInterval(loadDashboardMarketPrices, 60000);
 </script>
 <section class="card">
   <h2>Market Prices</h2>
