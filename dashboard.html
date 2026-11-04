@@ -42,7 +42,6 @@
       gap: 20px;
     }
 
-    /* OEX geometric logo */
     .oex-logo {
       width: 58px;
       height: 58px;
@@ -136,7 +135,7 @@
     }
 
     /* =========================
-       USER CARD
+       USER
     ========================= */
 
     .user-card {
@@ -317,12 +316,85 @@
     }
 
     /* =========================
+       REFERRAL
+    ========================= */
+
+    .referral-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .referral-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .referral-icon {
+      width: 62px;
+      height: 62px;
+
+      flex-shrink: 0;
+
+      border-radius: 50%;
+
+      background: #2787f5;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .referral-text h2 {
+      margin: 0 0 6px;
+      font-size: 28px;
+    }
+
+    .referral-text h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .referral-text p {
+      margin: 0;
+    }
+
+    .referral-link-box {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .referral-link-box input {
+      margin: 0;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .referral-link-box .action-button {
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    .referral-code {
+      margin-top: 18px;
+      font-size: 16px;
+    }
+
+    .referral-code strong {
+      color: white;
+      margin-left: 6px;
+    }
+
+    /* =========================
        MARKET
     ========================= */
 
     .market-title {
       font-size: 32px;
-
       margin: 0 0 20px;
     }
 
@@ -407,7 +479,6 @@
 
       header {
         min-height: 80px;
-
         padding: 14px 20px;
       }
 
@@ -418,7 +489,6 @@
       .oex-logo {
         width: 44px;
         height: 44px;
-
         gap: 5px;
       }
 
@@ -432,7 +502,6 @@
 
       .logout-button {
         padding: 10px 15px;
-
         font-size: 14px;
       }
 
@@ -451,6 +520,22 @@
       #dashboardMarketGrid {
         grid-template-columns:
           repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 600px) {
+
+      .referral-content {
+        align-items: flex-start;
+      }
+
+      .referral-link-box {
+        flex-direction: column;
+      }
+
+      .referral-link-box .action-button {
+        width: 100%;
       }
 
     }
@@ -487,7 +572,6 @@
 
       .action-button {
         width: 100%;
-
         margin-top: 8px;
       }
 
@@ -643,6 +727,73 @@
 
 
       <div id="actionArea"></div>
+
+    </section>
+
+
+    <!-- =========================
+         REFERRAL
+    ========================= -->
+
+    <section class="card referral-card">
+
+      <div class="referral-content">
+
+        <div class="referral-icon">
+          %
+        </div>
+
+        <div class="referral-text">
+
+          <h2>
+            REFERRAL
+          </h2>
+
+          <h3>
+            Invite friends and earn commission
+          </h3>
+
+          <p class="muted">
+            Invite friends and receive up to 20%
+            referral commission on eligible fees.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="referral-link-box">
+
+        <input
+          id="referralLink"
+          type="text"
+          value="https://oex-crypto.vercel.app/signup?rf=0EX-CCA701F7"
+          readonly
+        >
+
+        <button
+          class="action-button"
+          onclick="copyReferralLink()">
+
+          Copy Link
+
+        </button>
+
+      </div>
+
+
+      <div class="referral-code">
+
+        <span class="muted">
+          Code:
+        </span>
+
+        <strong>
+          OEX-CCA701F7
+        </strong>
+
+      </div>
 
     </section>
 
@@ -820,19 +971,73 @@
       }
 
 
-      /*
-        This currently validates the form only.
-
-        Do NOT process real withdrawals from
-        frontend JavaScript.
-
-        Real withdrawals should be handled
-        securely by a backend/server function.
-      */
-
       alert(
         "Withdrawal request received."
       );
+
+    }
+
+
+    /* ==========================================
+       REFERRAL COPY
+    ========================================== */
+
+    async function copyReferralLink() {
+
+      const referralInput =
+        document.getElementById(
+          "referralLink"
+        );
+
+      const referralLink =
+        referralInput.value;
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          referralLink
+        );
+
+
+        const button =
+          document.querySelector(
+            ".referral-link-box .action-button"
+          );
+
+
+        const originalText =
+          button.textContent;
+
+
+        button.textContent =
+          "Copied!";
+
+
+        setTimeout(() => {
+
+          button.textContent =
+            originalText;
+
+        }, 2000);
+
+
+      } catch (error) {
+
+        /* Fallback for older browsers */
+
+        referralInput.select();
+
+        document.execCommand(
+          "copy"
+        );
+
+
+        alert(
+          "Referral link copied!"
+        );
+
+      }
 
     }
 
