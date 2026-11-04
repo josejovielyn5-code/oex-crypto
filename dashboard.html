@@ -306,8 +306,7 @@ async function loadDashboardMarketPrices() {
   }
 }
 
-loadDashboardMarketPrices();
-
+window.addEventListener("load", loadDashboardMarketPrices);
 setInterval(loadDashboardMarketPrices, 60000);
 </script>
 <section class="card">
