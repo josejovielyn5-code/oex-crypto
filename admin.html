@@ -305,25 +305,95 @@ async function saveEthFee() {
   message.textContent = "ETH fee entered: " + fee + " ETH";
 }
 async function addBalance() {
+  const userId = document.getElementById("userSelect").value;
+  const coinSymbol = document.getElementById("coinType").value;
+  const amount = Number(document.getElementById("amount").value);
+  const message = document.getElementById("balanceMessage");
 
-  const email =
-    document.getElementById("userEmail").value.trim();
-
-  const coinSymbol =
-    document.getElementById("coinType").value;
-
-  const amount =
-    Number(document.getElementById("amount").value);
-
-  const message =
-    document.getElementById("balanceMessage");
-
-  if (!email || !amount || amount <= 0) {
-    message.textContent =
-      "Enter a user email and a valid amount.";
+  if (!userId) {
+    message.textContent = "Please select a user.";
     message.className = "error";
     return;
   }
+
+  if (!amount || amount <= 0) {
+    message.textContent = "Enter a valid amount.";
+    message.className = "error";
+    return;
+  }
+
+  message.textContent = "Adding balance...";
+  message.className = "";
+
+  const { data: coin, error: coinError } = await supabaseClient
+    .from("coins")
+    .select("id")
+    .eq("symbol", coinSymbol)
+    .single();
+
+  if (coinError || !coin) {
+    message.textContent = "Coin not found.";
+    message.className = "error";
+    return;
+  }
+
+  const { data: existingBalance, error: balanceError } =
+    await supabaseClient
+      .from("balances")
+      .select("id, amount")
+      .eq("user_id", userId)
+      .eq("coin_id", coin.id)
+      .maybeSingle();
+
+  if (balanceError) {
+    message.textContent = balanceError.message;
+    message.className = "error";
+    return;
+  }
+
+  if (existingBalance) {
+    const newAmount =
+      Number(existingBalance.amount) + amount;
+
+    const { error } = await supabaseClient
+      .from("balances")
+      .update({
+        amount: newAmount,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", existingBalance.id);
+
+    if (error) {
+      message.textContent = error.message;
+      message.className = "error";
+      return;
+    }
+  } else {
+    const { error } = await supabaseClient
+      .from("balances")
+      .insert({
+        user_id: userId,
+        coin_id: coin.id,
+        amount: amount
+      });
+
+    if (error) {
+      message.textContent = error.message;
+      message.className = "error";
+      return;
+    }
+  }
+
+  message.textContent =
+    "Balance added successfully: " +
+    amount +
+    " " +
+    coinSymbol;
+
+  message.className = "success";
+
+  document.getElementById("amount").value = "";
+}
 
   message.textContent = "Processing...";
 
