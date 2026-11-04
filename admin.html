@@ -84,7 +84,33 @@
 
 
   <div id="adminPanel" class="hidden">
+<div class="card">
+  <h3>Create User Account</h3>
 
+  <input
+    id="newUserName"
+    type="text"
+    placeholder="Full name"
+  >
+
+  <input
+    id="newUserEmail"
+    type="email"
+    placeholder="Email address"
+  >
+
+  <input
+    id="newUserPassword"
+    type="password"
+    placeholder="Password"
+  >
+
+  <button onclick="createUserAccount()">
+    Create User
+  </button>
+
+  <p id="createUserMessage"></p>
+</div>
     <div class="card">
       <h2>OEX Admin Panel</h2>
       <p class="muted">Manage user balances</p>
@@ -197,7 +223,28 @@ async function logout() {
   document.getElementById("adminPanel").classList.add("hidden");
   document.getElementById("loginCard").classList.remove("hidden");
 }
+async function createUserAccount() {
+  const name = document.getElementById("newUserName").value.trim();
+  const email = document.getElementById("newUserEmail").value.trim();
+  const password = document.getElementById("newUserPassword").value;
+  const message = document.getElementById("createUserMessage");
 
+  if (!name || !email || !password) {
+    message.textContent = "Please fill in all fields.";
+    return;
+  }
+
+  if (password.length < 6) {
+    message.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  message.textContent = "Creating user...";
+
+  // Temporary placeholder.
+  // The secure account-creation connection will be added next.
+  message.textContent = "User form is ready.";
+}
 
 async function addBalance() {
 
