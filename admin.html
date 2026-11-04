@@ -232,9 +232,35 @@ async function adminLogin() {
 
   document.getElementById("loginCard").classList.add("hidden");
   document.getElementById("adminPanel").classList.remove("hidden");
+  loadUsers();
 }
 
+async function loadUsers() {
+  const select = document.getElementById("userSelect");
 
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id, display_name, email")
+    .order("display_name");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  select.innerHTML = '<option value="">Select user</option>';
+
+  data.forEach(user => {
+    const option = document.createElement("option");
+    option.value = user.id;
+    option.textContent =
+      (user.display_name || "OEX User") +
+      " — " +
+      (user.email || "No email");
+
+    select.appendChild(option);
+  });
+}
 async function logout() {
 
   await supabaseClient.auth.signOut();
