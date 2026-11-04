@@ -267,7 +267,7 @@ async function loadDashboardMarketPrices() {
     const ids = dashboardCoins.map(c => c.id).join(",");
 
     const response = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets" +
+      "/api/market-prices" +
       "?vs_currency=usd" +
       "&ids=" + ids +
       "&order=market_cap_desc" +
