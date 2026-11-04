@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>OEX Dashboard</title>
+  <title>OEX Crypto Dashboard</title>
 
   <style>
     * {
@@ -15,153 +15,538 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, #101a2e 0%, #070b14 45%, #050810 100%);
+      color: #ffffff;
+      min-height: 100vh;
     }
 
+    /* =========================
+       HEADER
+    ========================= */
+
     header {
-      padding: 20px;
-      background: #11182d;
+      min-height: 110px;
+      padding: 18px 5%;
+      background: rgba(5, 9, 20, 0.96);
+      border-bottom: 1px solid #1c2639;
+
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #4da3ff;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
-    button {
-      background: #4da3ff;
+    /* OEX geometric logo */
+    .oex-logo {
+      width: 58px;
+      height: 58px;
+
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+
+      gap: 7px;
+    }
+
+    .oex-logo span {
+      background: #ffffff;
+      border-radius: 2px;
+    }
+
+    .brand-divider {
+      width: 2px;
+      height: 55px;
+      background: #ffffff;
+      opacity: 0.75;
+    }
+
+    .brand-name {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    .logout-button {
+      background: #2787f5;
       border: none;
       color: white;
-      padding: 10px 16px;
-      border-radius: 8px;
+
+      padding: 14px 28px;
+
+      border-radius: 11px;
+
+      font-size: 16px;
+      font-weight: 600;
+
       cursor: pointer;
-      font-size: 14px;
+
+      transition: 0.2s;
     }
 
-    button:hover {
-      opacity: 0.9;
+    .logout-button:hover {
+      background: #176ed1;
+      transform: translateY(-1px);
     }
+
+    /* =========================
+       MAIN
+    ========================= */
 
     main {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 20px;
+      width: 100%;
+      max-width: 1500px;
+
+      margin: 35px auto;
+
+      padding: 0 35px 50px;
     }
+
+    /* =========================
+       CARDS
+    ========================= */
 
     .card {
-      background: #11182d;
-      padding: 25px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-    }
+      background:
+        linear-gradient(
+          145deg,
+          rgba(15, 23, 40, 0.98),
+          rgba(7, 12, 23, 0.98)
+        );
 
-    .balance {
-      font-size: 30px;
-      font-weight: bold;
-      margin-top: 10px;
+      border: 1px solid #1d2940;
+
+      border-radius: 17px;
+
+      padding: 28px;
+
+      margin-bottom: 24px;
+
+      box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.25);
     }
 
     .muted {
-      color: #9aa4bd;
+      color: #9ca8c2;
     }
 
-    input {
-      background: #0b1020;
-      color: white;
-      border: 1px solid #263244;
-      border-radius: 8px;
-      padding: 12px;
-      width: 100%;
-      margin: 8px 0;
+    /* =========================
+       USER CARD
+    ========================= */
+
+    .user-card {
+      min-height: 230px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .welcome {
+      font-size: 20px;
+      color: #9ca8c2;
+      margin-bottom: 8px;
+    }
+
+    #userName {
+      font-size: 55px;
+      margin: 0 0 12px;
+      letter-spacing: -2px;
+    }
+
+    #userEmail {
+      font-size: 18px;
+    }
+
+    /* =========================
+       BALANCES
+    ========================= */
+
+    .balance-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 20px;
+    }
+
+    .balance-box {
+      background: #080e1b;
+
+      border: 1px solid #1c2940;
+
+      border-radius: 14px;
+
+      padding: 25px;
+    }
+
+    .balance-label {
+      color: #9ca8c2;
+
+      font-size: 17px;
+
+      margin-bottom: 8px;
+    }
+
+    .balance {
+      font-size: 38px;
+      font-weight: 700;
+    }
+
+    /* =========================
+       ACTIONS
+    ========================= */
+
+    .action-header {
+      display: flex;
+      align-items: center;
+
+      gap: 20px;
+
+      flex-wrap: wrap;
+    }
+
+    .usdt-icon {
+      width: 62px;
+      height: 62px;
+
+      border-radius: 50%;
+
+      background: #19a97b;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 34px;
+      font-weight: bold;
+    }
+
+    .action-title {
+      font-size: 34px;
+      font-weight: 700;
     }
 
     .action-button {
-      margin-right: 8px;
-      margin-top: 10px;
+      background: #2787f5;
+
+      border: none;
+
+      color: white;
+
+      padding: 15px 28px;
+
+      border-radius: 11px;
+
+      font-size: 17px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    .action-button:hover {
+      background: #176ed1;
+      transform: translateY(-1px);
+    }
+
+    #actionArea {
+      margin-top: 25px;
+
+      padding: 22px;
+
+      background: #080e1b;
+
+      border: 1px solid #1c2940;
+
+      border-radius: 14px;
+    }
+
+    #actionArea:empty {
+      display: none;
     }
 
     .address-box {
-      background: #0b1020;
-      padding: 15px;
+      background: #050a13;
+
+      border: 1px solid #27344c;
+
+      padding: 17px;
+
       border-radius: 10px;
+
       word-break: break-all;
+
+      font-family: monospace;
+
+      color: #ffffff;
+
       margin: 15px 0;
-      border: 1px solid #263244;
+    }
+
+    input {
+      width: 100%;
+
+      background: #050a13;
+
+      border: 1px solid #27344c;
+
+      color: white;
+
+      padding: 14px;
+
+      border-radius: 9px;
+
+      margin: 8px 0;
+
+      font-size: 15px;
+
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2787f5;
+    }
+
+    /* =========================
+       MARKET
+    ========================= */
+
+    .market-title {
+      font-size: 32px;
+
+      margin: 0 0 20px;
     }
 
     #dashboardMarketGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-top: 15px;
+
+      grid-template-columns:
+        repeat(6, minmax(160px, 1fr));
+
+      gap: 15px;
     }
 
     .market-card {
-      background: #111827;
-      border: 1px solid #263244;
+      background: #080e1b;
+
+      border: 1px solid #1c2940;
+
       border-radius: 14px;
+
       padding: 18px;
-      min-height: 150px;
+
+      min-height: 185px;
     }
 
     .market-header {
       display: flex;
+
       align-items: center;
-      gap: 12px;
+
+      gap: 11px;
     }
 
     .market-logo {
       width: 42px;
       height: 42px;
+
       border-radius: 50%;
     }
 
     .market-name {
       font-weight: 700;
-      font-size: 17px;
+
+      font-size: 16px;
     }
 
     .market-symbol {
-      color: #9ca3af;
+      color: #8e9bb4;
+
       font-size: 13px;
+
+      margin-top: 3px;
     }
 
     .market-price {
-      font-size: 24px;
+      font-size: 23px;
+
       font-weight: 700;
-      margin-top: 18px;
+
+      margin-top: 25px;
     }
 
     .market-change {
-      margin-top: 6px;
+      margin-top: 8px;
+
       font-size: 14px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 1100px) {
+
+      #dashboardMarketGrid {
+        grid-template-columns:
+          repeat(3, 1fr);
+      }
+
+    }
+
+    @media (max-width: 800px) {
+
+      header {
+        min-height: 80px;
+
+        padding: 14px 20px;
+      }
+
+      .brand {
+        gap: 12px;
+      }
+
+      .oex-logo {
+        width: 44px;
+        height: 44px;
+
+        gap: 5px;
+      }
+
+      .brand-divider {
+        height: 42px;
+      }
+
+      .brand-name {
+        font-size: 24px;
+      }
+
+      .logout-button {
+        padding: 10px 15px;
+
+        font-size: 14px;
+      }
+
+      main {
+        padding: 0 15px 40px;
+      }
+
+      #userName {
+        font-size: 40px;
+      }
+
+      .balance-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #dashboardMarketGrid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media (max-width: 500px) {
+
+      .brand-name {
+        font-size: 20px;
+      }
+
+      .brand-divider {
+        display: none;
+      }
+
+      .logout-button {
+        padding: 9px 12px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      #userName {
+        font-size: 32px;
+      }
+
+      .balance {
+        font-size: 29px;
+      }
+
+      .action-title {
+        font-size: 27px;
+      }
+
+      .action-button {
+        width: 100%;
+
+        margin-top: 8px;
+      }
+
+      #dashboardMarketGrid {
+        grid-template-columns: 1fr;
+      }
+
     }
   </style>
 </head>
 
+
 <body>
 
-  <header>
-    <div class="logo">OEX Crypto</div>
+  <!-- =========================
+       HEADER
+  ========================= -->
 
-    <button onclick="logout()">
+  <header>
+
+    <div class="brand">
+
+      <div class="oex-logo">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="brand-divider"></div>
+
+      <div class="brand-name">
+        OEX Crypto
+      </div>
+
+    </div>
+
+
+    <button
+      class="logout-button"
+      onclick="logout()">
+
       Log Out
+
     </button>
+
   </header>
 
 
   <main>
 
-    <!-- USER -->
-    <div class="card">
+    <!-- =========================
+         USER
+    ========================= -->
 
-      <div class="muted">
+    <section class="card user-card">
+
+      <div class="welcome">
         Welcome
       </div>
 
@@ -170,95 +555,132 @@
       </h1>
 
       <div
-        class="muted"
-        id="userEmail">
+        id="userEmail"
+        class="muted">
       </div>
 
-    </div>
+    </section>
 
 
-    <!-- BALANCES -->
-    <div class="card">
+    <!-- =========================
+         BALANCES
+    ========================= -->
 
-      <div class="muted">
-        USDT Balance
+    <section class="card">
+
+      <div class="balance-grid">
+
+        <div class="balance-box">
+
+          <div class="balance-label">
+            USDT Balance
+          </div>
+
+          <div
+            id="usdtBalance"
+            class="balance">
+
+            0.000000 USDT
+
+          </div>
+
+        </div>
+
+
+        <div class="balance-box">
+
+          <div class="balance-label">
+            ETH Balance
+          </div>
+
+          <div
+            id="ethBalance"
+            class="balance">
+
+            0.000000 ETH
+
+          </div>
+
+        </div>
+
       </div>
 
-      <div
-        class="balance"
-        id="usdtBalance">
-        0.00 USDT
+    </section>
+
+
+    <!-- =========================
+         USDT
+    ========================= -->
+
+    <section class="card">
+
+      <div class="action-header">
+
+        <div class="usdt-icon">
+          T
+        </div>
+
+        <div class="action-title">
+          USDT
+        </div>
+
+        <button
+          class="action-button"
+          onclick="showRecharge()">
+
+          Recharge
+
+        </button>
+
+        <button
+          class="action-button"
+          onclick="showWithdrawal()">
+
+          Withdrawal
+
+        </button>
+
       </div>
 
 
-      <div
-        class="muted"
-        style="margin-top:20px;">
-        ETH Balance
-      </div>
+      <div id="actionArea"></div>
 
-      <div
-        class="balance"
-        id="ethBalance">
-        0.00 ETH
-      </div>
-
-    </div>
+    </section>
 
 
-    <!-- USDT ACTIONS -->
-    <div class="card">
+    <!-- =========================
+         MARKET PRICES
+    ========================= -->
 
-      <h2>
-        USDT
-      </h2>
+    <section class="card">
 
-      <button
-        class="action-button"
-        onclick="showRecharge()">
-        Recharge
-      </button>
-
-      <button
-        class="action-button"
-        onclick="showWithdrawal()">
-        Withdrawal
-      </button>
-
-
-      <div
-        id="actionArea"
-        style="margin-top:20px;">
-      </div>
-
-    </div>
-
-
-    <!-- MARKET PRICES -->
-    <div class="card">
-
-      <h2>
-        Market Prices
+      <h2 class="market-title">
+        ↗ Market Prices
       </h2>
 
       <div id="dashboardMarketGrid">
+
         Loading market prices...
+
       </div>
 
-    </div>
+    </section>
 
   </main>
 
 
-  <!-- SUPABASE -->
+  <!-- =========================
+       SUPABASE
+  ========================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
 
 
   <script>
 
-    /* =========================================
-       SUPABASE
-    ========================================= */
+    /* ==========================================
+       SUPABASE CONFIGURATION
+    ========================================== */
 
     const SUPABASE_URL =
       "https://fnyxxyohuywtatbjagyc.supabase.co";
@@ -274,16 +696,15 @@
       );
 
 
-    /* =========================================
+    /* ==========================================
        RECHARGE
-    ========================================= */
+    ========================================== */
 
     function showRecharge() {
 
-      const actionArea =
-        document.getElementById("actionArea");
-
-      actionArea.innerHTML = `
+      document.getElementById(
+        "actionArea"
+      ).innerHTML = `
 
         <h3>
           Recharge USDT
@@ -294,9 +715,7 @@
         </p>
 
         <div class="address-box">
-
           0x6633c904fbb69ee62fc7209eca05a9152ed490fa
-
         </div>
 
         <p class="muted">
@@ -304,31 +723,30 @@
         </p>
 
         <p class="muted">
-          After sending your USDT, the balance will be
-          updated after the transaction is confirmed.
+          Your balance should only be credited after
+          the transaction has been verified.
         </p>
 
       `;
     }
 
 
-    /* =========================================
+    /* ==========================================
        WITHDRAWAL
-    ========================================= */
+    ========================================== */
 
     function showWithdrawal() {
 
-      const actionArea =
-        document.getElementById("actionArea");
-
-      actionArea.innerHTML = `
+      document.getElementById(
+        "actionArea"
+      ).innerHTML = `
 
         <h3>
           Withdrawal
         </h3>
 
         <p class="muted">
-          Enter destination address and amount.
+          Enter the destination address and amount.
         </p>
 
         <input
@@ -340,30 +758,31 @@
         <input
           id="withdrawAmount"
           type="number"
-          step="0.000001"
           min="0"
+          step="0.000001"
           placeholder="Amount USDT"
         >
 
         <p class="muted">
-          ETH Network Fee:
-          <strong>
-            Calculated when withdrawal is processed
-          </strong>
+          Network fee will be calculated when
+          the withdrawal is processed.
         </p>
 
         <button
+          class="action-button"
           onclick="submitWithdrawal()">
+
           Submit Withdrawal
+
         </button>
 
       `;
     }
 
 
-    /* =========================================
-       WITHDRAWAL SUBMIT
-    ========================================= */
+    /* ==========================================
+       WITHDRAWAL SUBMISSION
+    ========================================== */
 
     function submitWithdrawal() {
 
@@ -371,6 +790,7 @@
         document.getElementById(
           "withdrawAddress"
         ).value.trim();
+
 
       const amount =
         document.getElementById(
@@ -388,160 +808,200 @@
       }
 
 
-      if (!amount || Number(amount) <= 0) {
+      if (
+        !amount ||
+        Number(amount) <= 0
+      ) {
 
         alert(
-          "Please enter a valid withdrawal amount."
+          "Please enter a valid amount."
         );
 
         return;
       }
 
+
+      /*
+        This currently validates the form only.
+
+        Do NOT process real withdrawals from
+        frontend JavaScript.
+
+        Real withdrawals should be handled
+        securely by a backend/server function.
+      */
 
       alert(
         "Withdrawal request received."
       );
 
-      console.log(
-        "Withdrawal:",
-        {
-          address: address,
-          amount: amount
-        }
-      );
     }
 
 
-    /* =========================================
+    /* ==========================================
        LOAD USER
-    ========================================= */
+    ========================================== */
 
     async function loadUser() {
 
-      const {
-        data: {
-          user
+      try {
+
+        const {
+          data: {
+            user
+          }
+        } =
+          await supabaseClient
+            .auth
+            .getUser();
+
+
+        if (!user) {
+
+          window.location.href =
+            "/oex-crypto/";
+
+          return;
         }
-      } =
-        await supabaseClient.auth.getUser();
 
 
-      if (!user) {
-
-        window.location.href =
-          "/oex-crypto/";
-
-        return;
-      }
+        document.getElementById(
+          "userEmail"
+        ).textContent =
+          user.email || "";
 
 
-      document.getElementById(
-        "userEmail"
-      ).textContent =
-        user.email || "";
+        document.getElementById(
+          "userName"
+        ).textContent =
+          user.user_metadata?.display_name ||
+          "OEX User";
 
 
-      document.getElementById(
-        "userName"
-      ).textContent =
-        user.user_metadata?.display_name ||
-        "OEX User";
+        /* ===============================
+           LOAD BALANCES
+        =============================== */
+
+        const {
+          data: balances,
+          error
+        } =
+          await supabaseClient
+            .from("balances")
+            .select(`
+              amount,
+              coin_id,
+              coins (
+                symbol
+              )
+            `)
+            .eq(
+              "user_id",
+              user.id
+            );
 
 
-      /* LOAD BALANCES */
+        if (error) {
 
-      const {
-        data: balances,
-        error: balanceError
-      } =
-        await supabaseClient
-          .from("balances")
-          .select(`
-            amount,
-            coin_id,
-            coins (
-              symbol
-            )
-          `)
-          .eq(
-            "user_id",
-            user.id
+          console.error(
+            "Balance error:",
+            error
           );
 
+          return;
+        }
 
-      if (balanceError) {
 
-        console.error(
-          "Balance error:",
-          balanceError
+        let usdtBalance = 0;
+        let ethBalance = 0;
+
+
+        balances.forEach(
+          balance => {
+
+            const symbol =
+              balance.coins?.symbol;
+
+
+            if (symbol === "USDT") {
+
+              usdtBalance =
+                Number(balance.amount);
+
+            }
+
+
+            if (symbol === "ETH") {
+
+              ethBalance =
+                Number(balance.amount);
+
+            }
+
+          }
         );
 
-        return;
+
+        document.getElementById(
+          "usdtBalance"
+        ).textContent =
+          usdtBalance.toFixed(6) +
+          " USDT";
+
+
+        document.getElementById(
+          "ethBalance"
+        ).textContent =
+          ethBalance.toFixed(6) +
+          " ETH";
+
       }
 
+      catch (error) {
 
-      let usdtBalance = 0;
-      let ethBalance = 0;
+        console.error(
+          "User loading error:",
+          error
+        );
 
-
-      balances.forEach(
-        balance => {
-
-          const symbol =
-            balance.coins?.symbol;
-
-
-          if (symbol === "USDT") {
-
-            usdtBalance =
-              Number(balance.amount);
-
-          }
-
-
-          if (symbol === "ETH") {
-
-            ethBalance =
-              Number(balance.amount);
-
-          }
-
-        }
-      );
-
-
-      document.getElementById(
-        "usdtBalance"
-      ).textContent =
-        usdtBalance.toFixed(6) +
-        " USDT";
-
-
-      document.getElementById(
-        "ethBalance"
-      ).textContent =
-        ethBalance.toFixed(6) +
-        " ETH";
+      }
 
     }
 
 
-    /* =========================================
+    /* ==========================================
        LOGOUT
-    ========================================= */
+    ========================================== */
 
     async function logout() {
 
-      await supabaseClient.auth.signOut();
+      try {
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+      }
+
 
       window.location.href =
         "/oex-crypto/";
+
     }
 
 
-    /* =========================================
+    /* ==========================================
        MARKET COINS
-    ========================================= */
+    ========================================== */
 
     const dashboardCoins = [
 
@@ -584,9 +1044,9 @@
     ];
 
 
-    /* =========================================
+    /* ==========================================
        MARKET PRICES
-    ========================================= */
+    ========================================== */
 
     async function loadDashboardMarketPrices() {
 
@@ -613,21 +1073,31 @@
 
         const response =
           await fetch(
+
             "/api/market-prices" +
+
             "?vs_currency=usd" +
-            "&ids=" + ids +
+
+            "&ids=" +
+            encodeURIComponent(ids) +
+
             "&order=market_cap_desc" +
+
             "&per_page=20" +
+
             "&page=1" +
+
             "&sparkline=false" +
+
             "&price_change_percentage=24h"
+
           );
 
 
         if (!response.ok) {
 
           throw new Error(
-            "Price API unavailable"
+            "Market price API unavailable"
           );
 
         }
@@ -638,6 +1108,18 @@
 
 
         grid.innerHTML = "";
+
+
+        if (
+          !Array.isArray(data) ||
+          data.length === 0
+        ) {
+
+          grid.innerHTML =
+            "<p class='muted'>Market prices unavailable.</p>";
+
+          return;
+        }
 
 
         data.forEach(
@@ -651,6 +1133,12 @@
 
             card.className =
               "market-card";
+
+
+            const change =
+              Number(
+                coin.price_change_percentage_24h || 0
+              );
 
 
             card.innerHTML = `
@@ -679,20 +1167,16 @@
 
 
               <div class="market-price">
-
                 $${Number(
                   coin.current_price
                 ).toLocaleString()}
-
               </div>
 
 
               <div class="market-change">
 
                 24h:
-                ${Number(
-                  coin.price_change_percentage_24h || 0
-                ).toFixed(2)}%
+                ${change.toFixed(2)}%
 
               </div>
 
@@ -704,26 +1188,30 @@
           }
         );
 
+      }
 
-      } catch (error) {
+      catch (error) {
 
         console.error(
-          "Market price error:",
+          "Market prices error:",
           error
         );
 
 
-        grid.innerHTML =
-          "<p>Market prices unavailable.</p>";
+        grid.innerHTML = `
+          <p class="muted">
+            Market prices unavailable.
+          </p>
+        `;
 
       }
 
     }
 
 
-    /* =========================================
-       START
-    ========================================= */
+    /* ==========================================
+       START DASHBOARD
+    ========================================== */
 
     loadUser();
 
