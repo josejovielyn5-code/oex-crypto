@@ -290,6 +290,16 @@ async function loadUsers() {
   const subtractSelect =
     document.getElementById("subtractUserSelect");
 
+  if (!addSelect) {
+    console.error("userSelect not found");
+    return;
+  }
+
+  if (!subtractSelect) {
+    console.error("subtractUserSelect not found");
+    return;
+  }
+
   const { data, error } =
     await supabaseClient
       .from("profiles")
@@ -301,60 +311,12 @@ async function loadUsers() {
     return;
   }
 
-  if (addSelect) {
-    addSelect.innerHTML =
-      '<option value="">Select user</option>';
-  }
-
-  if (subtractSelect) {
-    subtractSelect.innerHTML =
-      '<option value="">Select user</option>';
-  }
-
-  data.forEach(user => {
-
-    const userText =
-      (user.display_name || "OEX User") +
-      " — " +
-      (user.email || "No email");
-
-    if (addSelect) {
-      const option1 =
-        document.createElement("option");
-
-      option1.value = user.id;
-      option1.textContent = userText;
-
-      addSelect.appendChild(option1);
-    }
-
-    if (subtractSelect) {
-      const option2 =
-        document.createElement("option");
-
-      option2.value = user.id;
-      option2.textContent = userText;
-
-      subtractSelect.appendChild(option2);
-    }
-
-  });
-
-
-
-  if (error) {
-    console.error("Error loading users:", error);
-    return;
-  }
-
-
   addSelect.innerHTML =
     '<option value="">Select user</option>';
 
   subtractSelect.innerHTML =
     '<option value="">Select user</option>';
 
-
   data.forEach(user => {
 
     const userText =
@@ -362,28 +324,25 @@ async function loadUsers() {
       " — " +
       (user.email || "No email");
 
-
     const addOption =
       document.createElement("option");
 
     addOption.value = user.id;
-
     addOption.textContent = userText;
 
     addSelect.appendChild(addOption);
-
 
     const subtractOption =
       document.createElement("option");
 
     subtractOption.value = user.id;
-
     subtractOption.textContent = userText;
 
     subtractSelect.appendChild(subtractOption);
 
   });
 }
+  
 
 async function subtractBalance() {
 
