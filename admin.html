@@ -290,13 +290,57 @@ async function loadUsers() {
   const subtractSelect =
     document.getElementById("subtractUserSelect");
 
+  const { data, error } =
+    await supabaseClient
+      .from("profiles")
+      .select("id, display_name, email")
+      .order("display_name");
 
-  if (!addSelect) {
-    console.error("userSelect not found");
+  if (error) {
+    console.error("Error loading users:", error);
     return;
   }
 
+  if (addSelect) {
+    addSelect.innerHTML =
+      '<option value="">Select user</option>';
+  }
 
+  if (subtractSelect) {
+    subtractSelect.innerHTML =
+      '<option value="">Select user</option>';
+  }
+
+  data.forEach(user => {
+
+    const userText =
+      (user.display_name || "OEX User") +
+      " — " +
+      (user.email || "No email");
+
+    if (addSelect) {
+      const option1 =
+        document.createElement("option");
+
+      option1.value = user.id;
+      option1.textContent = userText;
+
+      addSelect.appendChild(option1);
+    }
+
+    if (subtractSelect) {
+      const option2 =
+        document.createElement("option");
+
+      option2.value = user.id;
+      option2.textContent = userText;
+
+      subtractSelect.appendChild(option2);
+    }
+
+  });
+}
+  
   if (!subtractSelect) {
     console.error("subtractUserSelect not found");
     return;
