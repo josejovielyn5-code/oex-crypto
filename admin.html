@@ -284,12 +284,24 @@ async function adminLogin() {
 
 async function loadUsers() {
 
-  const select = document.getElementById("userSelect");
+  const addSelect =
+    document.getElementById("userSelect");
 
-  if (!select) {
+  const subtractSelect =
+    document.getElementById("subtractUserSelect");
+
+
+  if (!addSelect) {
     console.error("userSelect not found");
     return;
   }
+
+
+  if (!subtractSelect) {
+    console.error("subtractUserSelect not found");
+    return;
+  }
+
 
   const { data, error } =
     await supabaseClient
@@ -297,30 +309,212 @@ async function loadUsers() {
       .select("id, display_name, email")
       .order("display_name");
 
+
   if (error) {
-    console.error(error);
+    console.error("Error loading users:", error);
     return;
   }
 
-  select.innerHTML =
+
+  addSelect.innerHTML =
     '<option value="">Select user</option>';
+
+  subtractSelect.innerHTML =
+    '<option value="">Select user</option>';
+
 
   data.forEach(user => {
 
-    const option = document.createElement("option");
-
-    option.value = user.id;
-
-    option.textContent =
+    const userText =
       (user.display_name || "OEX User") +
       " — " +
       (user.email || "No email");
 
-    select.appendChild(option);
+
+    const addOption =
+      document.createElement("option");
+
+    addOption.value = user.id;
+
+    addOption.textContent = userText;
+
+    addSelect.appendChild(addOption);
+
+
+    const subtractOption =
+      document.createElement("option");
+
+    subtractOption.value = user.id;
+
+    subtractOption.textContent = userText;
+
+    subtractSelect.appendChild(subtractOption);
 
   });
 }
 
+async function subtractBalance() {
+
+  const userId =
+    document.getElementById("subtractUserSelect").value;
+
+  const coinSymbol =
+    document.getElementById("subtractCoinType").value;
+
+  const amount =
+    Number(
+      document.getElementById("subtractAmount").value
+    );
+
+  const message =
+    document.getElementById(
+      "subtractBalanceMessage"
+    );
+
+
+  if (!userId) {
+
+    message.textContent =
+      "Please select a user.";
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  if (!amount || amount <= 0) {
+
+    message.textContent =
+      "Enter a valid amount.";
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  message.textContent =
+    "Checking balance...";
+
+  message.className = "";
+
+
+  const { data: coin, error: coinError } =
+    await supabaseClient
+      .from("coins")
+      .select("id")
+      .eq("symbol", coinSymbol)
+      .single();
+
+
+  if (coinError || !coin) {
+
+    message.textContent =
+      "Coin not found.";
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  const {
+    data: existingBalance,
+    error: balanceError
+  } =
+    await supabaseClient
+      .from("balances")
+      .select("id, amount")
+      .eq("user_id", userId)
+      .eq("coin_id", coin.id)
+      .maybeSingle();
+
+
+  if (balanceError) {
+
+    message.textContent =
+      balanceError.message;
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  if (!existingBalance) {
+
+    message.textContent =
+      "This user does not have a " +
+      coinSymbol +
+      " balance.";
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  const currentBalance =
+    Number(existingBalance.amount);
+
+
+  if (amount > currentBalance) {
+
+    message.textContent =
+      "Insufficient balance. Current balance: " +
+      currentBalance +
+      " " +
+      coinSymbol;
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  const newBalance =
+    currentBalance - amount;
+
+
+  const { error: updateError } =
+    await supabaseClient
+      .from("balances")
+      .update({
+        amount: newBalance,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", existingBalance.id);
+
+
+  if (updateError) {
+
+    message.textContent =
+      updateError.message;
+
+    message.className = "error";
+
+    return;
+  }
+
+
+  message.textContent =
+    "Successfully deducted " +
+    amount +
+    " " +
+    coinSymbol +
+    ". New balance: " +
+    newBalance +
+    " " +
+    coinSymbol;
+
+  message.className = "success";
+
+
+  document.getElementById(
+    "subtractAmount"
+  ).value = "";
+}
 
 async function logout() {
 
