@@ -339,19 +339,7 @@ async function loadUsers() {
     }
 
   });
-}
-  
-  if (!subtractSelect) {
-    console.error("subtractUserSelect not found");
-    return;
-  }
 
-
-  const { data, error } =
-    await supabaseClient
-      .from("profiles")
-      .select("id, display_name, email")
-      .order("display_name");
 
 
   if (error) {
