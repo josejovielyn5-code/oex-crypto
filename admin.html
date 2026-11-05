@@ -1,19 +1,28 @@
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0/dist/umd/supabase.min.js"></script>
+
 <script>
 
-const SUPABASE_URL = "https://fnyxxyohuywtatbjagyc.supabase.co";
+const SUPABASE_URL =
+  "https://fnyxxyohuywtatbjagyc.supabase.co";
 
-const SUPABASE_KEY = "sb_publishable_A3iHoZiiPZhPyTUDUDCfZ_QG0u6xvxj";
+const SUPABASE_KEY =
+  "sb_publishable_A3iHoZiiPZhPyTUDUDCfZ_QG0u6xvxj";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
+
+// ========================================
+// ADMIN LOGIN
+// ========================================
 
 async function adminLogin() {
 
   const email =
-    document.getElementById("email").value;
+    document.getElementById("email").value.trim();
 
   const password =
     document.getElementById("password").value;
@@ -21,29 +30,48 @@ async function adminLogin() {
   const message =
     document.getElementById("loginMessage");
 
-  message.textContent = "Logging in...";
+  message.textContent =
+    "Logging in...";
+
   message.className = "";
 
-  const { data, error } =
+
+  const {
+    data,
+    error
+  } =
     await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
 
+
   if (error) {
-    message.textContent = error.message;
-    message.className = "error";
+
+    message.textContent =
+      error.message;
+
+    message.className =
+      "error";
+
     return;
   }
 
-  const user = data.user;
 
-  const { data: profile, error: profileError } =
+  const user =
+    data.user;
+
+
+  const {
+    data: profile,
+    error: profileError
+  } =
     await supabaseClient
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single();
+
 
   if (
     profileError ||
@@ -56,47 +84,74 @@ async function adminLogin() {
     message.textContent =
       "Access denied. Admin account required.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
+
 
   document
     .getElementById("loginCard")
     .classList.add("hidden");
 
+
   document
     .getElementById("adminPanel")
     .classList.remove("hidden");
+
 
   await loadUsers();
 }
 
 
+// ========================================
+// LOAD USERS
+// ========================================
+
 async function loadUsers() {
 
-  const select =
+  const addSelect =
     document.getElementById("userSelect");
 
   const subtractSelect =
-    document.getElementById("subtractUserSelect");
+    document.getElementById(
+      "subtractUserSelect"
+    );
 
-  if (!select) {
-    console.error("userSelect not found");
+
+  if (!addSelect) {
+
+    console.error(
+      "userSelect not found"
+    );
+
     return;
   }
+
 
   if (!subtractSelect) {
-    console.error("subtractUserSelect not found");
+
+    console.error(
+      "subtractUserSelect not found"
+    );
+
     return;
   }
 
 
-  const { data, error } =
+  const {
+    data,
+    error
+  } =
     await supabaseClient
       .from("profiles")
-      .select("id, display_name, email")
-      .order("display_name");
+      .select(
+        "id, display_name, email"
+      )
+      .order(
+        "display_name"
+      );
 
 
   if (error) {
@@ -107,7 +162,7 @@ async function loadUsers() {
   }
 
 
-  select.innerHTML =
+  addSelect.innerHTML =
     '<option value="">Select user</option>';
 
   subtractSelect.innerHTML =
@@ -117,41 +172,65 @@ async function loadUsers() {
   data.forEach(user => {
 
     const userText =
-      (user.display_name || "OEX User") +
+      (user.display_name ||
+        "OEX User") +
       " — " +
-      (user.email || "No email");
+      (user.email ||
+        "No email");
 
+
+    // ADD BALANCE USER
 
     const addOption =
-      document.createElement("option");
+      document.createElement(
+        "option"
+      );
 
-    addOption.value = user.id;
+    addOption.value =
+      user.id;
 
-    addOption.textContent = userText;
+    addOption.textContent =
+      userText;
 
-    select.appendChild(addOption);
+    addSelect.appendChild(
+      addOption
+    );
 
+
+    // SUBTRACT BALANCE USER
 
     const subtractOption =
-      document.createElement("option");
+      document.createElement(
+        "option"
+      );
 
-    subtractOption.value = user.id;
+    subtractOption.value =
+      user.id;
 
-    subtractOption.textContent = userText;
+    subtractOption.textContent =
+      userText;
 
-    subtractSelect.appendChild(subtractOption);
+    subtractSelect.appendChild(
+      subtractOption
+    );
 
   });
 }
 
 
+// ========================================
+// LOGOUT
+// ========================================
+
 async function logout() {
 
   await supabaseClient.auth.signOut();
 
+
   document
     .getElementById("adminPanel")
     .classList.add("hidden");
+
 
   document
     .getElementById("loginCard")
@@ -159,21 +238,43 @@ async function logout() {
 }
 
 
+// ========================================
+// ADD BALANCE
+// ========================================
+
 async function addBalance() {
 
   const userId =
-    document.getElementById("userSelect").value;
+    document
+      .getElementById(
+        "userSelect"
+      )
+      .value;
+
 
   const coinSymbol =
-    document.getElementById("coinType").value;
+    document
+      .getElementById(
+        "coinType"
+      )
+      .value;
+
 
   const amount =
     Number(
-      document.getElementById("amount").value
+      document
+        .getElementById(
+          "amount"
+        )
+        .value
     );
 
+
   const message =
-    document.getElementById("balanceMessage");
+    document
+      .getElementById(
+        "balanceMessage"
+      );
 
 
   if (!userId) {
@@ -181,7 +282,8 @@ async function addBalance() {
     message.textContent =
       "Please select a user.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
@@ -192,7 +294,8 @@ async function addBalance() {
     message.textContent =
       "Enter a valid amount.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
@@ -204,24 +307,38 @@ async function addBalance() {
   message.className = "";
 
 
-  const { data: coin, error: coinError } =
+  // Find coin
+
+  const {
+    data: coin,
+    error: coinError
+  } =
     await supabaseClient
       .from("coins")
       .select("id")
-      .eq("symbol", coinSymbol)
+      .eq(
+        "symbol",
+        coinSymbol
+      )
       .single();
 
 
-  if (coinError || !coin) {
+  if (
+    coinError ||
+    !coin
+  ) {
 
     message.textContent =
       "Coin not found.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
+
+  // Find existing balance
 
   const {
     data: existingBalance,
@@ -229,9 +346,17 @@ async function addBalance() {
   } =
     await supabaseClient
       .from("balances")
-      .select("id, amount")
-      .eq("user_id", userId)
-      .eq("coin_id", coin.id)
+      .select(
+        "id, amount"
+      )
+      .eq(
+        "user_id",
+        userId
+      )
+      .eq(
+        "coin_id",
+        coin.id
+      )
       .maybeSingle();
 
 
@@ -240,58 +365,72 @@ async function addBalance() {
     message.textContent =
       balanceError.message;
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
 
+  // Existing balance
+
   if (existingBalance) {
 
     const newAmount =
-      Number(existingBalance.amount) +
-      amount;
+      Number(
+        existingBalance.amount
+      ) + amount;
 
 
     const {
-      data: updatedBalance,
       error
     } =
       await supabaseClient
         .from("balances")
         .update({
-          amount: newAmount,
+          amount:
+            newAmount,
+
           updated_at:
             new Date().toISOString()
         })
         .eq(
           "id",
           existingBalance.id
-        )
-        .select()
-        .single();
+        );
 
 
-    if (error || !updatedBalance) {
+    if (error) {
 
       message.textContent =
-        error?.message ||
-        "Balance update failed.";
+        error.message;
 
-      message.className = "error";
+      message.className =
+        "error";
 
       return;
     }
 
-  } else {
+  }
 
-    const { error } =
+  // No balance yet
+
+  else {
+
+    const {
+      error
+    } =
       await supabaseClient
         .from("balances")
         .insert({
-          user_id: userId,
-          coin_id: coin.id,
-          amount: amount
+          user_id:
+            userId,
+
+          coin_id:
+            coin.id,
+
+          amount:
+            amount
         });
 
 
@@ -300,7 +439,8 @@ async function addBalance() {
       message.textContent =
         error.message;
 
-      message.className = "error";
+      message.className =
+        "error";
 
       return;
     }
@@ -313,35 +453,46 @@ async function addBalance() {
     " " +
     coinSymbol;
 
-  message.className = "success";
+  message.className =
+    "success";
 
 
-  document.getElementById("amount").value = "";
+  document
+    .getElementById(
+      "amount"
+    )
+    .value = "";
 }
 
 
-/* ================================
-   SUBTRACT BALANCE
-================================ */
+// ========================================
+// SUBTRACT BALANCE
+// ========================================
 
 async function subtractBalance() {
 
   const userId =
     document
-      .getElementById("subtractUserSelect")
+      .getElementById(
+        "subtractUserSelect"
+      )
       .value;
 
 
   const coinSymbol =
     document
-      .getElementById("subtractCoinType")
+      .getElementById(
+        "subtractCoinType"
+      )
       .value;
 
 
   const amount =
     Number(
       document
-        .getElementById("subtractAmount")
+        .getElementById(
+          "subtractAmount"
+        )
         .value
     );
 
@@ -353,23 +504,29 @@ async function subtractBalance() {
       );
 
 
+  // Check user
+
   if (!userId) {
 
     message.textContent =
       "Please select a user.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
+
+  // Check amount
 
   if (!amount || amount <= 0) {
 
     message.textContent =
       "Enter a valid amount.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
@@ -381,6 +538,8 @@ async function subtractBalance() {
   message.className = "";
 
 
+  // Find coin
+
   const {
     data: coin,
     error: coinError
@@ -388,20 +547,29 @@ async function subtractBalance() {
     await supabaseClient
       .from("coins")
       .select("id")
-      .eq("symbol", coinSymbol)
+      .eq(
+        "symbol",
+        coinSymbol
+      )
       .single();
 
 
-  if (coinError || !coin) {
+  if (
+    coinError ||
+    !coin
+  ) {
 
     message.textContent =
       "Coin not found.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
+
+  // Find user balance
 
   const {
     data: existingBalance,
@@ -409,9 +577,17 @@ async function subtractBalance() {
   } =
     await supabaseClient
       .from("balances")
-      .select("id, amount")
-      .eq("user_id", userId)
-      .eq("coin_id", coin.id)
+      .select(
+        "id, amount"
+      )
+      .eq(
+        "user_id",
+        userId
+      )
+      .eq(
+        "coin_id",
+        coin.id
+      )
       .maybeSingle();
 
 
@@ -420,11 +596,14 @@ async function subtractBalance() {
     message.textContent =
       balanceError.message;
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
+
+  // No balance
 
   if (!existingBalance) {
 
@@ -433,17 +612,25 @@ async function subtractBalance() {
       coinSymbol +
       " balance.";
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
 
   const currentBalance =
-    Number(existingBalance.amount);
+    Number(
+      existingBalance.amount
+    );
 
 
-  if (amount > currentBalance) {
+  // Prevent negative balance
+
+  if (
+    amount >
+    currentBalance
+  ) {
 
     message.textContent =
       "Insufficient balance. Current balance: " +
@@ -451,21 +638,31 @@ async function subtractBalance() {
       " " +
       coinSymbol;
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
 
+  // Calculate new balance
+
   const newBalance =
-    currentBalance - amount;
+    currentBalance -
+    amount;
 
 
-  const { error: updateError } =
+  // Update balance
+
+  const {
+    error: updateError
+  } =
     await supabaseClient
       .from("balances")
       .update({
-        amount: newBalance,
+        amount:
+          newBalance,
+
         updated_at:
           new Date().toISOString()
       })
@@ -480,11 +677,14 @@ async function subtractBalance() {
     message.textContent =
       updateError.message;
 
-    message.className = "error";
+    message.className =
+      "error";
 
     return;
   }
 
+
+  // Success
 
   message.textContent =
     "Successfully deducted " +
@@ -496,11 +696,14 @@ async function subtractBalance() {
     " " +
     coinSymbol;
 
-  message.className = "success";
+  message.className =
+    "success";
 
 
   document
-    .getElementById("subtractAmount")
+    .getElementById(
+      "subtractAmount"
+    )
     .value = "";
 }
 
